@@ -1,0 +1,3 @@
+/Users/fozboom/CLionProjects/GameTetris/cmake-build-debug/CMakeFiles/Tetris.dir
+/Users/fozboom/CLionProjects/GameTetris/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/fozboom/CLionProjects/GameTetris/cmake-build-debug/CMakeFiles/rebuild_cache.dir
