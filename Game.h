@@ -14,12 +14,14 @@ protected:
     //my_Sprite blockNextFigure;
 public:
     Game();
+    void showMenu(sf::RenderWindow& window);
     void keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window);
-    void buttonAction (int& key, Game& game);
-    void fallingFigure (sf::Clock& timer, float pause, Game& game);
+    void buttonAction (int& key);
+    void fallingFigure (sf::Clock& timer, float pause);
     Figure* getRandomFigure();
     std::vector<Figure*> getAllFigures();
     void draw(sf::RenderWindow& window);
+    void drawNextFigureBlock(sf::RenderWindow& window);
     bool boundariesIsBroken ();
     void isLocked();
     int distanceToLocked ();

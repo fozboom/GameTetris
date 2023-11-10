@@ -1,13 +1,21 @@
 
 #include "Figure.h"
 
-Figure::Figure(): cubeImage("color_cubes.png"), type(0), cellSize(30), offsetX(0), offsetY(0), distanceToCollision(0)
+int generateRandomNumber(int a, int b)
 {
-    rotationStatus = generateRandomNumber(0, 3);
-    color = generateRandomNumber(1, 8);
-
-
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<int> distribution(a, b);
+    return distribution(gen);
 }
+
+Figure::Figure(): shadowCube("shadow_cube.png"), cubeImage("color_cubes.png"), type(0), cellSize(30), offsetX(6), offsetY(0), distanceToCollision(0)
+{
+    rotationStatus = 0;
+    color = generateRandomNumber(1, 8);
+}
+
+
 
 
 
@@ -16,12 +24,17 @@ void Figure::drawFigure(sf::RenderWindow& window)
     std::vector<Block> tmp = newCondition();
 
     cubeImage.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
+    shadowCube.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
     for (Block item: tmp)
     {
         cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +466), static_cast<float>(item.y*cellSize + 166));
         window.draw(cubeImage.sprite);
-        cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +466), static_cast<float>(item.y*cellSize + 166 + distanceToCollision*CELL_SIZE));
-        window.draw(cubeImage.sprite);
+        if (distanceToCollision >= heightOfBlock)
+        {
+            shadowCube.sprite.setPosition(static_cast<float>(item.x * cellSize + 466),
+                                         static_cast<float>(item.y * cellSize + 166 + distanceToCollision * CELL_SIZE));
+            window.draw(shadowCube.sprite);
+        }
     }
 
 }

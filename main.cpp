@@ -22,8 +22,8 @@ int main()
             game.keyPressCheck(event, key, window);
         }
 
-        game.fallingFigure(timer, pause, game);
-        game.buttonAction(key, game);
+        game.fallingFigure(timer, pause);
+        game.buttonAction(key);
         game.lineFilled();
         if(game.gameOver())
         {
@@ -32,7 +32,7 @@ int main()
         }
         window.clear();
 
-        //window.draw(game.backg);
+        //game.showMenu(window);
         game.draw(window);
         window.display();
 
