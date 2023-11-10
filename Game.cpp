@@ -36,12 +36,11 @@ void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
 
 }
 
-Game::Game():background("back.png"), oneBlock("color_cubes.png"), blockNextFigure("blockNextFigure.png"), figures(getAllFigures()), field()
+Game::Game():oneBlock("color_cubes.png"), figures(getAllFigures()), field()
 {
     currentFigure = getRandomFigure();
     nextFigure = getRandomFigure();
-    blockNextFigure.sprite.setScale(    0.50, 0.50);
-    background.sprite.setScale(1300, 1500);
+    currentFigure->setDistanceToCollision(distanceToLocked());
 
 }
 
@@ -65,6 +64,7 @@ void Game::draw(sf::RenderWindow& window)
     //window.draw(blockNextFigure.sprite);
     currentFigure->drawFigure(window);
     figures = getAllFigures();
+    currentFigure->setDistanceToCollision(distanceToLocked());
 
 }
 
@@ -201,4 +201,26 @@ void Game::deleteLine(int k)
     for (int j = 0; j < WIDTH; ++j)
         field.setGameBoard(0, j, 0);
 
+}
+
+int Game::distanceToLocked()
+{
+    std::vector<Block> tmp = currentFigure->getStatus();
+
+    int minDistance = 25;
+
+    for (Block item: tmp)
+    {
+        int i = 0;
+        while (field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0 && i < HEIGHT - 2)
+        {
+            ++i;
+        }
+        if ((i-1) < minDistance)
+            minDistance = i - 1;
+
+    }
+
+
+    return minDistance;
 }

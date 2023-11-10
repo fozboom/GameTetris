@@ -9,9 +9,9 @@ protected:
     Figure* currentFigure;
     Figure* nextFigure;
     std::vector<Figure*> figures;
-    my_Sprite background;
+    //my_Sprite background;
     my_Sprite oneBlock;
-    my_Sprite blockNextFigure;
+    //my_Sprite blockNextFigure;
 public:
     Game();
     void keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window);
@@ -22,6 +22,7 @@ public:
     void draw(sf::RenderWindow& window);
     bool boundariesIsBroken ();
     void isLocked();
+    int distanceToLocked ();
     void drawGrid(sf::RenderWindow& window);
     bool gameOver();
     void lineFilled ();

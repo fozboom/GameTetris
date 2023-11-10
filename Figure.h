@@ -21,17 +21,23 @@ protected:
     int cellSize;
     int offsetX;
     int offsetY;
+    int distanceToCollision;
     my_Sprite cubeImage;
     int type;
 public:
     Figure();
     int getType() const {return type;}
     int getColor() const {return color;}
+    void setDistanceToCollision(int x){distanceToCollision = x;}
     sf::Sprite& getCubeSprite() {return cubeImage.sprite;}
     void drawFigure(sf::RenderWindow& window);
     void move(int xPos, int yPos);
     std::vector<Block> newCondition ();
     virtual void rotateTetromino (bool flag);
+    std::vector<Block> getStatus(){return status;}
+
+    int get_offset_x() const{return offsetX;}
+    int get_offset_y() const{return offsetY;}
 };
 
 class J_Block: public Figure

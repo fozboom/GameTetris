@@ -1,11 +1,14 @@
 
 #include "Figure.h"
 
-Figure::Figure(): cubeImage("color_cubes.png"), type(0), cellSize(30), offsetX(0), offsetY(0)
+Figure::Figure(): cubeImage("color_cubes.png"), type(0), cellSize(30), offsetX(0), offsetY(0), distanceToCollision(0)
 {
     rotationStatus = generateRandomNumber(0, 3);
     color = generateRandomNumber(1, 8);
+
+
 }
+
 
 
 void Figure::drawFigure(sf::RenderWindow& window)
@@ -17,7 +20,10 @@ void Figure::drawFigure(sf::RenderWindow& window)
     {
         cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +466), static_cast<float>(item.y*cellSize + 166));
         window.draw(cubeImage.sprite);
+        cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +466), static_cast<float>(item.y*cellSize + 166 + distanceToCollision*CELL_SIZE));
+        window.draw(cubeImage.sprite);
     }
+
 }
 
 void Figure::move(int x, int y)
