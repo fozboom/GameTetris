@@ -37,10 +37,14 @@ void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
 
 Game::Game():oneBlock("color_cubes.png"), figures(getAllFigures()), field()
 {
+    readFileBestPlayers("BestPlayersInfo.txt");
     currentFigure = getRandomFigure();
     nextFigure = getRandomFigure();
     currentFigure->setDistanceToCollision(distanceToLocked());
-
+    font.loadFromFile("AbhayaLibre-Bold.ttf");
+    text.setFont(font);
+    text.setCharacterSize(20);
+    text.setColor(sf::Color::Black);
 }
 
 Figure* Game::getRandomFigure()
@@ -115,7 +119,7 @@ void Game::drawGrid(sf::RenderWindow& window)
             if (field.getGameBoard(i,j) != 0)
             {
                 oneBlock.sprite.setTextureRect(sf::IntRect((field.getGameBoard(i, j) - 1) * CELL_SIZE, 0, CELL_SIZE , CELL_SIZE) );
-                oneBlock.sprite.setPosition(static_cast<float>(j*CELL_SIZE+466), static_cast<float>(i*CELL_SIZE+166));
+                oneBlock.sprite.setPosition(static_cast<float>(j*CELL_SIZE+463), static_cast<float>(i*CELL_SIZE+168));
                 window.draw(oneBlock.sprite);
             }
         }
@@ -237,24 +241,74 @@ int Game::distanceToLocked()
 void Game::showMenu(sf::RenderWindow &window)
 {
     sf::Font font;
-    font.loadFromFile("Font.ttf");
+    font.loadFromFile("AbhayaLibre-Bold.ttf");
     sf::Text text("", font, 20);
-    text.setColor(sf::Color::White);
+    //text.setColor(sf::Color::White);
     text.setString("Start");
     text.setPosition(0, 0);
     window.draw(text);
 }
 void Game::drawNextFigureBlock(sf::RenderWindow &window)
 {
-    int offsetX = 0, offsetY = 0;
+    int offsetX, offsetY;
     oneBlock.sprite.setTextureRect(sf::IntRect((nextFigure->getColor()-1) * CELL_SIZE,0,CELL_SIZE , CELL_SIZE) );
     for (Block& item: nextFigure->getStatus())
     {
+        offsetX = 0, offsetY = 0;
         if (nextFigure->getType() == 6)
-            offsetX = -25;
+            offsetX = -21;
         else if (nextFigure->getType() == 7)
             offsetX = 8;
-        oneBlock.sprite.setPosition(static_cast<float>(item.x*CELL_SIZE +1122 + offsetX), static_cast<float>(item.y*CELL_SIZE + 275 + offsetY));
+        oneBlock.sprite.setPosition(static_cast<float>(item.x*CELL_SIZE +1122 + offsetX), static_cast<float>(item.y*CELL_SIZE + 261 + offsetY));
         window.draw(oneBlock.sprite);
     }
+}
+
+void Game::readFileBestPlayers(const char* fileName)
+{
+    std::ifstream read;
+    read.open(fileName);
+    if (!read.is_open()) {throw ExceptionFile("Ошибка открытия файла для чтения");}
+
+    for (auto & i : infoBlock)
+    {
+        if (!(read >> i.nickName >> i.scope))
+        {
+            throw ExceptionFile("Ошибка чтения данных из файла");
+        }
+    }
+}
+
+void Game::writeFileBestPlayers(const char* fileName)
+{
+    std::ofstream input;
+    input.open(fileName);
+    if (!input.is_open()) {throw ExceptionFile("Ошибка открытия файла для записи");}
+
+    for (int i = 0; i < COUNT_PERSONS; ++i)
+    {
+        rewind(stdin);
+        std::cin.getline(infoBlock[i].nickName, 10);
+        rewind(stdin);
+        std::cin >> infoBlock[i].scope;
+        input << infoBlock[i].nickName << " " << infoBlock[i].scope << "\n";
+    }
+}
+
+void Game::showBestPlayersBlock(sf::RenderWindow& window)
+{
+    int offset_x = 70, offset_y = 0;
+    std::string x;
+    for (int i = 0; i < COUNT_PERSONS; ++i)
+    {
+        text.setString(infoBlock[i].nickName);
+        text.setPosition(160, 230 + offset_y);
+        window.draw(text);
+        x = std::to_string(infoBlock[i].scope);
+        text.setString(x);
+        text.setPosition(160 + offset_x, 230 + offset_y);
+        window.draw(text);
+        offset_y += 30;
+    }
+
 }

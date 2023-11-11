@@ -1,7 +1,11 @@
 #include "Game.h"
 int main()
 {
-    Game game;
+
+
+   Game game;
+
+   //game.writeFileBestPlayers("BestPlayersInfo.txt");
 
 
     sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Tetris", sf::Style::Fullscreen);
@@ -34,6 +38,7 @@ int main()
 
         //game.showMenu(window);
         game.draw(window);
+        game.showBestPlayersBlock(window);
         window.display();
 
     }

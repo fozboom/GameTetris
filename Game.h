@@ -9,9 +9,11 @@ protected:
     Figure* currentFigure;
     Figure* nextFigure;
     std::vector<Figure*> figures;
-    //my_Sprite background;
     my_Sprite oneBlock;
-    //my_Sprite blockNextFigure;
+    sf::Font font;
+    sf::Text text;
+public:
+    PlayerInfo infoBlock[COUNT_PERSONS];
 public:
     Game();
     void showMenu(sf::RenderWindow& window);
@@ -29,7 +31,9 @@ public:
     bool gameOver();
     void lineFilled ();
     void deleteLine (int k);
-
+    void readFileBestPlayers(const char* fileName);
+    void writeFileBestPlayers(const char* fileName);
+    void showBestPlayersBlock(sf::RenderWindow& window);
 };
 
 

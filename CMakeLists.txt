@@ -17,6 +17,9 @@ add_executable(Tetris main.cpp
         Level.h
         Button.cpp
         Button.h
-        Sprite.h Button.cpp Button.h)
+        Sprite.h
+        Button.cpp
+        Button.h
+        Exceptions.h)
 
 target_link_libraries(Tetris sfml-graphics sfml-audio)
