@@ -35,8 +35,9 @@ void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
 
 }
 
-Game::Game():oneBlock("color_cubes.png"), figures(getAllFigures()), field()
+Game::Game():oneBlock("color_cubes.png"), field()
 {
+    getAllFigures();
     readFileBestPlayers("BestPlayersInfo.txt");
     currentFigure = getRandomFigure();
     nextFigure = getRandomFigure();
@@ -47,7 +48,7 @@ Game::Game():oneBlock("color_cubes.png"), figures(getAllFigures()), field()
     text.setColor(sf::Color::Black);
 }
 
-Figure* Game::getRandomFigure()
+Figure*& Game::getRandomFigure()
 {
     if (figures.empty())
     {
@@ -75,12 +76,21 @@ void Game::draw(sf::RenderWindow& window)
     currentFigure->setDistanceToCollision(distanceToLocked());
     currentFigure->drawFigure(window);
     drawNextFigureBlock(window);
-    figures = getAllFigures();
+    getAllFigures();
 }
 
-std::vector<Figure*> Game::getAllFigures()
+void  Game::getAllFigures()
 {
-    return {new J_Block(), new Z_Block(), new T_Block(), new S_Block(), new L_Block(), new I_Block(), new O_Block()};
+    if (figures.empty())
+    {
+        figures.push_back(new J_Block());
+        figures.push_back(new Z_Block());
+        figures.push_back(new T_Block());
+        figures.push_back(new S_Block());
+        figures.push_back(new L_Block());
+        figures.push_back(new I_Block());
+        figures.push_back(new O_Block());
+    }
 }
 
 bool Game::boundariesIsBroken()
@@ -97,7 +107,7 @@ bool Game::boundariesIsBroken()
 void Game::isLocked()
 {
     std::vector<Block> object = currentFigure->newCondition();
-    for (Block item: object)
+    for (Block& item: object)
     {
         field.setGameBoard(item.y, item.x, currentFigure->getColor());
     }
@@ -119,7 +129,7 @@ void Game::drawGrid(sf::RenderWindow& window)
             if (field.getGameBoard(i,j) != 0)
             {
                 oneBlock.sprite.setTextureRect(sf::IntRect((field.getGameBoard(i, j) - 1) * CELL_SIZE, 0, CELL_SIZE , CELL_SIZE) );
-                oneBlock.sprite.setPosition(static_cast<float>(j*CELL_SIZE+463), static_cast<float>(i*CELL_SIZE+168));
+                oneBlock.sprite.setPosition(static_cast<float>(j*CELL_SIZE+516), static_cast<float>(i*CELL_SIZE+158));
                 window.draw(oneBlock.sprite);
             }
         }
@@ -176,7 +186,7 @@ void Game::fallingFigure(sf::Clock& timer, float pause)
 bool Game::gameOver()
 {
     std::vector<Block> object = currentFigure->newCondition();
-    for (Block item: object)
+    for (Block& item: object)
         if (boundariesIsBroken() && (item.y == 0))
             return true;
     return false;
@@ -222,10 +232,10 @@ int Game::distanceToLocked()
 {
     int minDistance = 25;
 
-    for (Block item: currentFigure->getStatus())
+    for (Block& item: currentFigure->getStatus())
     {
         int i = 0;
-        while (field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0 && i < HEIGHT - 2)
+        while (field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0 && i < HEIGHT - 1)
         {
             ++i;
         }

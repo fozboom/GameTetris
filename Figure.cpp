@@ -12,7 +12,7 @@ int generateRandomNumber(int a, int b)
 Figure::Figure(): shadowCube("shadow_cube.png"), cubeImage("color_cubes.png"), type(0), cellSize(30), offsetX(6), offsetY(0), distanceToCollision(0)
 {
     rotationStatus = 0;
-    color = generateRandomNumber(1, 8);
+    color = generateRandomNumber(1, 3);
 }
 
 
@@ -25,14 +25,14 @@ void Figure::drawFigure(sf::RenderWindow& window)
 
     cubeImage.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
     shadowCube.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
-    for (Block item: tmp)
+    for (Block& item: tmp)
     {
-        cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +463), static_cast<float>(item.y*cellSize + 167));
+        cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +516), static_cast<float>(item.y*cellSize + 158));
         window.draw(cubeImage.sprite);
         if (distanceToCollision >= heightOfBlock)
         {
-            shadowCube.sprite.setPosition(static_cast<float>(item.x * cellSize + 463),
-                                         static_cast<float>(item.y * cellSize + 167 + distanceToCollision * CELL_SIZE));
+            shadowCube.sprite.setPosition(static_cast<float>(item.x * cellSize + 516),
+                                          static_cast<float>(item.y * cellSize + 158 + distanceToCollision * CELL_SIZE));
             window.draw(shadowCube.sprite);
         }
     }
@@ -80,6 +80,3 @@ Block::Block(int x, int y)
     this->x = x;
     this->y = y;
 }
-
-
-

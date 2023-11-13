@@ -20,8 +20,8 @@ public:
     void keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);
-    Figure* getRandomFigure();
-    std::vector<Figure*> getAllFigures();
+    Figure*& getRandomFigure();
+    void getAllFigures();
     void draw(sf::RenderWindow& window);
     void drawNextFigureBlock(sf::RenderWindow& window);
     bool boundariesIsBroken ();
