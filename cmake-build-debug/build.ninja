@@ -91,6 +91,13 @@ build CMakeFiles/Tetris.dir/Button.cpp.o: CXX_COMPILER__Tetris_Debug /Users/fozb
   OBJECT_DIR = CMakeFiles/Tetris.dir
   OBJECT_FILE_DIR = CMakeFiles/Tetris.dir
 
+build CMakeFiles/Tetris.dir/GameMenu.cpp.o: CXX_COMPILER__Tetris_Debug /Users/fozboom/CLionProjects/GameTetris/GameMenu.cpp || cmake_object_order_depends_target_Tetris
+  DEP_FILE = CMakeFiles/Tetris.dir/GameMenu.cpp.o.d
+  FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk -fcolor-diagnostics -F/Library/Frameworks/.  -std=gnu++17
+  INCLUDES = -iframework /Library/Frameworks
+  OBJECT_DIR = CMakeFiles/Tetris.dir
+  OBJECT_FILE_DIR = CMakeFiles/Tetris.dir
+
 
 # =============================================================================
 # Link build statements for EXECUTABLE target Tetris
@@ -99,7 +106,7 @@ build CMakeFiles/Tetris.dir/Button.cpp.o: CXX_COMPILER__Tetris_Debug /Users/fozb
 #############################################
 # Link the executable Tetris
 
-build Tetris: CXX_EXECUTABLE_LINKER__Tetris_Debug CMakeFiles/Tetris.dir/main.cpp.o CMakeFiles/Tetris.dir/Board.cpp.o CMakeFiles/Tetris.dir/Game.cpp.o CMakeFiles/Tetris.dir/Figure.cpp.o CMakeFiles/Tetris.dir/Level.cpp.o CMakeFiles/Tetris.dir/Button.cpp.o | /Library/Frameworks/./sfml-graphics.framework/Versions/2.6.0/sfml-graphics /Library/Frameworks/./sfml-audio.framework/Versions/2.6.0/sfml-audio /Library/Frameworks/./sfml-window.framework/Versions/2.6.0/sfml-window /Library/Frameworks/./sfml-system.framework/Versions/2.6.0/sfml-system
+build Tetris: CXX_EXECUTABLE_LINKER__Tetris_Debug CMakeFiles/Tetris.dir/main.cpp.o CMakeFiles/Tetris.dir/Board.cpp.o CMakeFiles/Tetris.dir/Game.cpp.o CMakeFiles/Tetris.dir/Figure.cpp.o CMakeFiles/Tetris.dir/Level.cpp.o CMakeFiles/Tetris.dir/Button.cpp.o CMakeFiles/Tetris.dir/GameMenu.cpp.o | /Library/Frameworks/./sfml-graphics.framework/Versions/2.6.0/sfml-graphics /Library/Frameworks/./sfml-audio.framework/Versions/2.6.0/sfml-audio /Library/Frameworks/./sfml-window.framework/Versions/2.6.0/sfml-window /Library/Frameworks/./sfml-system.framework/Versions/2.6.0/sfml-system
   FLAGS = -g -arch arm64 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.0.sdk
   LINK_LIBRARIES = -Wl,-rpath,/Library/Frameworks/.  /Library/Frameworks/./sfml-graphics.framework/Versions/2.6.0/sfml-graphics  /Library/Frameworks/./sfml-audio.framework/Versions/2.6.0/sfml-audio  /Library/Frameworks/./sfml-window.framework/Versions/2.6.0/sfml-window  /Library/Frameworks/./sfml-system.framework/Versions/2.6.0/sfml-system
   LINK_PATH = -F/Library/Frameworks/.

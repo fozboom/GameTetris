@@ -16,7 +16,6 @@ public:
     PlayerInfo infoBlock[COUNT_PERSONS];
 public:
     Game();
-    void showMenu(sf::RenderWindow& window);
     void keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);

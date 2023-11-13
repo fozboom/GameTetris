@@ -248,16 +248,7 @@ int Game::distanceToLocked()
     return minDistance;
 }
 
-void Game::showMenu(sf::RenderWindow &window)
-{
-    sf::Font font;
-    font.loadFromFile("AbhayaLibre-Bold.ttf");
-    sf::Text text("", font, 20);
-    //text.setColor(sf::Color::White);
-    text.setString("Start");
-    text.setPosition(0, 0);
-    window.draw(text);
-}
+
 void Game::drawNextFigureBlock(sf::RenderWindow &window)
 {
     int offsetX, offsetY;

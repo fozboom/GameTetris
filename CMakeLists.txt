@@ -20,6 +20,8 @@ add_executable(Tetris main.cpp
         Sprite.h
         Button.cpp
         Button.h
-        Exceptions.h)
+        Exceptions.h
+        GameMenu.cpp
+        GameMenu.h)
 
 target_link_libraries(Tetris sfml-graphics sfml-audio)

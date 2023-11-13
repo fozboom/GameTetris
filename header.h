@@ -11,11 +11,18 @@ const int COUNT_PERSONS = 5;
 #include <fstream>
 #include <map>
 
+
 #include <thread>
 #include "Sprite.h"
+#include "GameMenu.h"
 #include "Board.h"
 #include "Figure.h"
 #include "Exceptions.h"
+
+
+
+
+
 
 
 int generateRandomNumber (int a, int b);
