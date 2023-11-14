@@ -15,6 +15,10 @@ void GameMenu::keyPressCheck(sf::Event& event)
         {
             key = 2;
         }
+        if (event.key.code == sf::Keyboard::Enter)
+        {
+            key = 3;
+        }
     }
 }
 
@@ -45,6 +49,13 @@ void GameMenu::buttonAction()
         typeOfMenu++;
         if (typeOfMenu > 2)
             typeOfMenu = 0;
+    }
+    if (key == 3)
+    {
+        if (typeOfMenu == 0)
+            isMenu = false;
+        else
+            exit(EXIT_SUCCESS);
     }
     key = 0;
 }

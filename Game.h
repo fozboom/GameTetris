@@ -12,6 +12,11 @@ protected:
     my_Sprite oneBlock;
     sf::Font font;
     sf::Text text;
+    int lines_in_a_row;
+    int score = 10000;
+    float time;
+    sf::Clock clock;
+    std::string number;
 public:
     PlayerInfo infoBlock[COUNT_PERSONS];
 public:
@@ -29,10 +34,13 @@ public:
     void drawGrid(sf::RenderWindow& window);
     bool gameOver();
     void lineFilled ();
-    void deleteLine (int k);
+    void deleteLine (int num, int count);
     void readFileBestPlayers(const char* fileName);
     void writeFileBestPlayers(const char* fileName);
     void showBestPlayersBlock(sf::RenderWindow& window);
+    void scoreBooster (int& _lines_in_a_row);
+
+    void showScore (sf::RenderWindow& window);
 };
 
 

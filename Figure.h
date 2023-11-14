@@ -38,7 +38,7 @@ public:
     void drawFigure(sf::RenderWindow& window);
     void move(int xPos, int yPos);
     std::vector<Block> newCondition ();
-    virtual void rotateTetromino (bool flag);
+    virtual void rotateTetromino (bool flag) = 0;
     std::vector<Block>& getStatus(){return status;}
     int get_offset_x() const{return offsetX;}
     int get_offset_y() const{return offsetY;}
@@ -52,10 +52,10 @@ public:
     J_Block()
     {
         type = 1;
-        allRotationOptions[3] = {Block(1, 0), Block(1, 1), Block(1, 2), Block(0, 2)};
-        allRotationOptions[1] = {Block(0, 0), Block(0, 1), Block(1, 1), Block(2, 1)};
-        allRotationOptions[2] = {Block(0, 0), Block(1, 0), Block(0, 1), Block(0, 2)};
         allRotationOptions[0] = {Block(0, 0), Block(1, 0), Block(2, 0), Block(2, 1)};
+        allRotationOptions[1] = {Block(1, 0), Block(1, 1), Block(1, 2), Block(0, 2)};
+        allRotationOptions[2] = {Block(0, 0), Block(0, 1), Block(1, 1), Block(2, 1)};
+        allRotationOptions[3] = {Block(0, 0), Block(1, 0), Block(0, 1), Block(0, 2)};
         status = allRotationOptions[0];
         heightOfBlock = 3;
     }
@@ -211,10 +211,10 @@ public:
     L_Block()
     {
         type = 5;
-        allRotationOptions[1] = {Block(0, 0), Block(0, 1), Block(0, 2), Block(1, 2)};
         allRotationOptions[0] = {Block(0, 0), Block(1, 0), Block(2, 0), Block(0, 1)};
-        allRotationOptions[2] = {Block(0, 0), Block(1, 0), Block(1, 1), Block(1, 2)};
-        allRotationOptions[3] = {Block(0, 1), Block(1, 1), Block(2, 1), Block(2, 0)};
+        allRotationOptions[1] = {Block(0, 0), Block(1, 0), Block(1, 1), Block(1, 2)};
+        allRotationOptions[2] = {Block(0, 1), Block(1, 1), Block(2, 1), Block(2, 0)};
+        allRotationOptions[3] = {Block(0, 0), Block(0, 1), Block(0, 2), Block(1, 2)};
         status = allRotationOptions[0];
         heightOfBlock = 3;
     }

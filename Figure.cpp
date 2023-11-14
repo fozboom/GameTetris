@@ -59,18 +59,6 @@ std::vector<Block> Figure::newCondition()
 
 void Figure::rotateTetromino(bool flag)
 {
-    if (flag)
-    {
-        rotationStatus++;
-        if (rotationStatus > 3)
-            rotationStatus = 0;
-    }
-    else
-    {
-        rotationStatus--;
-        if(rotationStatus < 0)
-            rotationStatus = 3;
-    }
 
 }
 

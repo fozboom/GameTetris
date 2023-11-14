@@ -35,17 +35,17 @@ void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
 
 }
 
-Game::Game():oneBlock("color_cubes.png"), field()
+Game::Game():oneBlock("color_cubes.png"), field(), lines_in_a_row(0), score(0), time(10)
 {
     getAllFigures();
     readFileBestPlayers("BestPlayersInfo.txt");
     currentFigure = getRandomFigure();
     nextFigure = getRandomFigure();
     currentFigure->setDistanceToCollision(distanceToLocked());
-    font.loadFromFile("AbhayaLibre-Bold.ttf");
+    font.loadFromFile("ZCOOLQingKeHuangYou-Regular.ttf");
     text.setFont(font);
-    text.setCharacterSize(20);
-    text.setColor(sf::Color::Black);
+    text.setCharacterSize(24);
+    text.setColor(sf::Color::White);
 }
 
 Figure*& Game::getRandomFigure()
@@ -77,6 +77,9 @@ void Game::draw(sf::RenderWindow& window)
     currentFigure->drawFigure(window);
     drawNextFigureBlock(window);
     getAllFigures();
+//    sf::Time elapsedTime = clock.restart();
+//
+//    time  += elapsedTime.asSeconds();
 }
 
 void  Game::getAllFigures()
@@ -152,9 +155,9 @@ void Game::buttonAction(int &key)
     }
     if (key == 3)
     {
-        currentFigure->rotateTetromino(true);
+        currentFigure->rotateTetromino(false);
         if(boundariesIsBroken())
-            currentFigure->rotateTetromino(false);
+            currentFigure->rotateTetromino(true);
     }
     if (key == 4)
     {
@@ -179,6 +182,7 @@ void Game::fallingFigure(sf::Clock& timer, float pause)
         {
             currentFigure->move(0, -1);
             isLocked();
+            lineFilled();
         }
     }
 }
@@ -194,38 +198,48 @@ bool Game::gameOver()
 
 void Game::lineFilled()
 {
-    bool flag = true;
+    lines_in_a_row = 0;
+    bool isFull = true;
     for (int i = HEIGHT - 1; i >= 0; --i)
     {
         for (int j = 0; j < WIDTH; ++j)
         {
             if (field.getGameBoard(i, j) == 0)
             {
-                flag =  false;
+                isFull =  false;
                 break;
             }
         }
-        if (flag)
+        if (isFull)
         {
-            deleteLine(i);
+            lines_in_a_row++;
         }
-        flag = true;
+        if (!isFull && lines_in_a_row>0)
+        {
+            std::cout << lines_in_a_row << std::endl;
+            deleteLine(i, lines_in_a_row);
+            i+= lines_in_a_row;
+            scoreBooster(lines_in_a_row);
+            std::cout << lines_in_a_row << std::endl;
+        }
+        isFull = true;
     }
 }
 
-void Game::deleteLine(int k)
+void Game::deleteLine(int num, int count)
 {
-    for (int i = k; i > 0; --i)
+    for(int k = count; k > 0; --k)
     {
-        for (int j = 0; j < WIDTH; ++j)
+        for (int i = num + count; i > 0; --i)
         {
-            field.setGameBoard(i,j,field.getGameBoard(i-1, j));
-
+            for (int j = 0; j < WIDTH; ++j)
+            {
+                field.setGameBoard(i, j, field.getGameBoard(i - 1, j));
+            }
         }
+        for (int j = 0; j < WIDTH; ++j)
+            field.setGameBoard(0, j, 0);
     }
-    for (int j = 0; j < WIDTH; ++j)
-        field.setGameBoard(0, j, 0);
-
 }
 
 int Game::distanceToLocked()
@@ -299,17 +313,67 @@ void Game::writeFileBestPlayers(const char* fileName)
 void Game::showBestPlayersBlock(sf::RenderWindow& window)
 {
     int offset_x = 70, offset_y = 0;
-    std::string x;
     for (int i = 0; i < COUNT_PERSONS; ++i)
     {
         text.setString(infoBlock[i].nickName);
         text.setPosition(160, 230 + offset_y);
         window.draw(text);
-        x = std::to_string(infoBlock[i].scope);
-        text.setString(x);
+        number = std::to_string(infoBlock[i].scope);
+        text.setString(number);
         text.setPosition(160 + offset_x, 230 + offset_y);
         window.draw(text);
         offset_y += 30;
     }
 
 }
+
+void Game::scoreBooster(int& _lines_in_a_row)
+{
+    if (_lines_in_a_row == 1)
+    {
+        score += 40 + static_cast<int>( 0.1 * time * 40);
+        std::cout << "+80\n";
+    }
+    else if(_lines_in_a_row == 2)
+    {
+        score += 100 + static_cast<int>( 0.1 * time * 100);
+        std::cout << "+200\n";
+    }
+    else if(_lines_in_a_row == 3)
+    {
+        score += 300 + static_cast<int>( 0.1 * time * 300);
+        std::cout << "+600\n";
+    }
+    else if(_lines_in_a_row == 4)
+    {
+        score += 1200 + static_cast<int>( 0.1 * time * 1200);
+        std::cout << "+2400\n";
+    }
+    lines_in_a_row = 0;
+
+}
+
+void Game::showScore(sf::RenderWindow& window)
+{
+    float x = 1295, y = 96;
+    number = std::to_string(score);
+    text.setString(number);
+    if (score < 10)
+        x -= 0;
+    else if (score < 100)
+        x -= 5;
+    else if (score < 1000)
+        x -= 10;
+    else if (score < 10'000)
+        x -= 15;
+    else if (score < 100'000)
+        x -= 20;
+    else if (score < 1'000'000)
+        x -= 25;
+    else if (score < 10'000'000)
+        x -= 30;
+    text.setPosition(x, y);
+    window.draw(text);
+}
+
+
