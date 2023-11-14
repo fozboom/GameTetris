@@ -27,12 +27,12 @@ void Figure::drawFigure(sf::RenderWindow& window)
     shadowCube.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
     for (Block& item: tmp)
     {
-        cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +516), static_cast<float>(item.y*cellSize + 158));
+        cubeImage.sprite.setPosition(static_cast<float>(item.x*cellSize +576), static_cast<float>(item.y*cellSize + 175));
         window.draw(cubeImage.sprite);
         if (distanceToCollision >= heightOfBlock)
         {
-            shadowCube.sprite.setPosition(static_cast<float>(item.x * cellSize + 516),
-                                          static_cast<float>(item.y * cellSize + 158 + distanceToCollision * CELL_SIZE));
+            shadowCube.sprite.setPosition(static_cast<float>(item.x * cellSize + 576),
+                                          static_cast<float>(item.y * cellSize + 175 + distanceToCollision * CELL_SIZE));
             window.draw(shadowCube.sprite);
         }
     }

@@ -254,8 +254,8 @@ public:
     I_Block()
     {
         type = 6;
-        allRotationOptions[1] = {Block(0, 0), Block(0, 1), Block(0, 2), Block(0, 3)};
         allRotationOptions[0] = {Block(0, 0), Block(1, 0), Block(2, 0), Block(3, 0)};
+        allRotationOptions[1] = {Block(0, -3), Block(0, -2), Block(0, -1), Block(0, 0)};
         status = allRotationOptions[0];
         heightOfBlock = 4;
     }

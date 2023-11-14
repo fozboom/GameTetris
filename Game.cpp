@@ -23,7 +23,7 @@ void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
         {
             key = 4;
         }
-        if (event.key.code == sf::Keyboard::Space)
+        if (event.key.code == sf::Keyboard::Enter)
         {
             key = 5;
         }
@@ -77,9 +77,7 @@ void Game::draw(sf::RenderWindow& window)
     currentFigure->drawFigure(window);
     drawNextFigureBlock(window);
     getAllFigures();
-//    sf::Time elapsedTime = clock.restart();
-//
-//    time  += elapsedTime.asSeconds();
+    showGameTime(window);
 }
 
 void  Game::getAllFigures()
@@ -132,7 +130,7 @@ void Game::drawGrid(sf::RenderWindow& window)
             if (field.getGameBoard(i,j) != 0)
             {
                 oneBlock.sprite.setTextureRect(sf::IntRect((field.getGameBoard(i, j) - 1) * CELL_SIZE, 0, CELL_SIZE , CELL_SIZE) );
-                oneBlock.sprite.setPosition(static_cast<float>(j*CELL_SIZE+516), static_cast<float>(i*CELL_SIZE+158));
+                oneBlock.sprite.setPosition(static_cast<float>(j*CELL_SIZE+576), static_cast<float>(i*CELL_SIZE+175));
                 window.draw(oneBlock.sprite);
             }
         }
@@ -316,11 +314,11 @@ void Game::showBestPlayersBlock(sf::RenderWindow& window)
     for (int i = 0; i < COUNT_PERSONS; ++i)
     {
         text.setString(infoBlock[i].nickName);
-        text.setPosition(160, 230 + offset_y);
+        text.setPosition(static_cast<float>(175), static_cast<float>(195 + offset_y));
         window.draw(text);
         number = std::to_string(infoBlock[i].scope);
         text.setString(number);
-        text.setPosition(160 + offset_x, 230 + offset_y);
+        text.setPosition(static_cast<float>(175 + offset_x), static_cast<float>(195 + offset_y));
         window.draw(text);
         offset_y += 30;
     }
@@ -331,22 +329,22 @@ void Game::scoreBooster(int& _lines_in_a_row)
 {
     if (_lines_in_a_row == 1)
     {
-        score += 40 + static_cast<int>( 0.1 * time * 40);
+        score += 40 + static_cast<int>( 0.05 * time * 40);
         std::cout << "+80\n";
     }
     else if(_lines_in_a_row == 2)
     {
-        score += 100 + static_cast<int>( 0.1 * time * 100);
+        score += 100 + static_cast<int>( 0.05 * time * 100);
         std::cout << "+200\n";
     }
     else if(_lines_in_a_row == 3)
     {
-        score += 300 + static_cast<int>( 0.1 * time * 300);
+        score += 300 + static_cast<int>( 0.05 * time * 300);
         std::cout << "+600\n";
     }
     else if(_lines_in_a_row == 4)
     {
-        score += 1200 + static_cast<int>( 0.1 * time * 1200);
+        score += 1200 + static_cast<int>( 0.05 * time * 1200);
         std::cout << "+2400\n";
     }
     lines_in_a_row = 0;
@@ -374,6 +372,53 @@ void Game::showScore(sf::RenderWindow& window)
         x -= 30;
     text.setPosition(x, y);
     window.draw(text);
+}
+
+void Game::showGameTime(sf::RenderWindow &window)
+{
+    time = static_cast<int>(gameTime.getElapsedTime().asSeconds());
+
+
+
+
+    if(time < 10)
+    {
+        number = std::to_string(time);
+        text.setString("00:0" + number);
+    }
+    else if (time < 60)
+    {
+        number = std::to_string(time);
+        text.setString("00:" + number);
+    }
+    else if (time < 600)
+    {
+        std::string seconds;
+
+        number = std::to_string(time/60);
+        seconds = std::to_string(time%60);
+        if (time%60 < 10)
+            text.setString("0"+number + ":0" + seconds);
+        else
+            text.setString("0"+number + ":" + seconds);
+    }
+    else
+    {
+        std::string seconds;
+        number = std::to_string(time/60);
+        seconds = std::to_string(time%60);
+        if (time%60 < 10)
+            text.setString(number + ":0" + seconds);
+        else
+            text.setString(number + ":" + seconds);
+    }
+    text.setPosition(1293,45);
+    window.draw(text);
+
+    //1335 когда до 10 секунд
+    //1323 - когда до 60 секунд
+    //1306 когда 01:89
+    //1293 когда 23:88;
 }
 
 

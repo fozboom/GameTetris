@@ -1,60 +1,17 @@
 #include "Game.h"
 
-void showMenu(sf::RenderWindow& window)
+void showMenu(sf::RenderWindow& window);
+bool startGame(GameMenu& menu)
 {
-    my_Sprite menuImage("menu.png");
-    my_Sprite buttonStart("buttonStart.png");
-    my_Sprite buttonResume("buttonResume.png");
-    my_Sprite buttonExit("buttonExit.png");
-
-    int isMenu = true;
-    int typeOfMenu = 0;
-    while(isMenu)
-    {
-        window.clear();
-
-        if (sf::IntRect(579, 233, 280, 125).contains(sf::Mouse::getPosition(window)))
-        {
-            typeOfMenu = 1;
-        }
-        else if (sf::IntRect(579, 395, 280, 125).contains(sf::Mouse::getPosition(window)))
-        {
-            typeOfMenu = 2;
-        }
-        else if (sf::IntRect(579, 554, 280, 125).contains(sf::Mouse::getPosition(window)))
-        {
-            typeOfMenu = 3;
-        }
-
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
-        {
-            if (typeOfMenu == 1){isMenu = false;}
-            if (typeOfMenu == 2) {isMenu = false;}
-            if (typeOfMenu == 3) { return;}
-
-        }
-        if (typeOfMenu == 0)
-            window.draw(menuImage.sprite);
-        else if (typeOfMenu == 1)
-            window.draw(buttonStart.sprite);
-        else if (typeOfMenu == 2)
-            window.draw(buttonResume.sprite);
-        else window.draw(buttonExit.sprite);
-        window.display();
-    }
-}
-int main()
-{
-
     Game game;
     //game.writeFileBestPlayers("BestPlayersInfo.txt");
-    GameMenu many;
 
     sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Tetris", sf::Style::Fullscreen);
-    showMenu(window);
+
     sf::Clock timer;
     float pause = 0.27f;
     int key = 0;
+    bool isPaused = true;
     while (window.isOpen())
     {
 
@@ -65,15 +22,58 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            if(many.getIsMenu())
-                many.keyPressCheck(event);
+            if(menu.getIsMenu())
+                menu.keyPressCheck(event);
             else
+            {
                 game.keyPressCheck(event, key, window);
+
+                if (event.type == sf::Event::KeyPressed)
+                {
+                    if (event.key.code == sf::Keyboard::R)
+                    {
+                        return true;
+                    }
+                    if (event.key.code == sf::Keyboard::Q)
+                    {
+                        return false;
+                    }
+                    if (event.key.code == sf::Keyboard::Space )
+                    {
+                        while (window.waitEvent(event))
+                        {
+                            if((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)||
+                                    (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+                                     && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+                                break;
+                        }
+                    }
+                }
+                if (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+                 && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                {
+                    while (window.waitEvent(event))
+                    {
+                        if((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Space)||
+                           (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+                            && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+                            break;
+                    }
+                }
+                if (sf::IntRect(1109, 483, 110, 110).contains(sf::Mouse::getPosition(window))
+                && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                {
+                   return true;
+                }
+
+
+
+            }
         }
 
         window.clear();
-        if(many.getIsMenu())
-            many.showMenu(window);
+        if(menu.getIsMenu())
+            menu.showMenu(window);
         else
         {
             game.fallingFigure(timer, pause);
@@ -92,6 +92,16 @@ int main()
         window.display();
 
     }
+}
 
+void gameRunning(GameMenu& menu)
+{
+    if(startGame(menu)){gameRunning(menu);}
+}
+
+int main()
+{
+    GameMenu menu;
+    gameRunning(menu);
     return 0;
 }

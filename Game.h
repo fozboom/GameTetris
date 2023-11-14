@@ -14,8 +14,8 @@ protected:
     sf::Text text;
     int lines_in_a_row;
     int score = 10000;
-    float time;
-    sf::Clock clock;
+    int time;
+    sf::Clock gameTime;
     std::string number;
 public:
     PlayerInfo infoBlock[COUNT_PERSONS];
@@ -39,7 +39,7 @@ public:
     void writeFileBestPlayers(const char* fileName);
     void showBestPlayersBlock(sf::RenderWindow& window);
     void scoreBooster (int& _lines_in_a_row);
-
+    void showGameTime(sf::RenderWindow& window);
     void showScore (sf::RenderWindow& window);
 };
 
