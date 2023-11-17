@@ -7,11 +7,11 @@ void GameMenu::keyPressCheck(sf::Event& event)
 {
     if (event.type == sf::Event::KeyPressed)
     {
-        if (event.key.code == sf::Keyboard::W)
+        if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up)
         {
             key = 1;
         }
-        if (event.key.code == sf::Keyboard::S)
+        if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down)
         {
             key = 2;
         }

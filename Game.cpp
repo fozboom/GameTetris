@@ -3,7 +3,7 @@
 
 
 
-void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
+int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key)
 {
     if (event.type == sf::Event::KeyPressed)
     {
@@ -23,16 +23,37 @@ void Game::keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window)
         {
             key = 4;
         }
-        if (event.key.code == sf::Keyboard::Enter)
+        if (event.key.code == sf::Keyboard::Space)
         {
             key = 5;
         }
-        if (event.key.code == sf::Keyboard::Escape) {
+        if (event.key.code == sf::Keyboard::RAlt)
+        {
             window.close();
         }
+        if (event.key.code == sf::Keyboard::R || (sf::IntRect(1109, 483, 110, 110).contains(sf::Mouse::getPosition(window))
+        && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+        {
+            return 1;
+        }
+        if (event.key.code == sf::Keyboard::Q)
+        {
+            return 0;
+        }
+        if (event.key.code == sf::Keyboard::Escape ||
+        (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+        && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+        {
+            while (window.waitEvent(event))
+            {
+                if((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)||
+                   (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+                    && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+                    break;
+            }
+        }
     }
-
-
+    return 3;
 }
 
 Game::Game():oneBlock("color_cubes.png"), field(), lines_in_a_row(0), score(0), time(10)
@@ -137,7 +158,7 @@ void Game::drawGrid(sf::RenderWindow& window)
     }
 }
 
-void Game::buttonAction(int &key)
+void Game::buttonAction(int& key)
 {
     if (key == 1)
     {
@@ -429,6 +450,52 @@ void Game::checkStatisticBeforeSave()
         }
 
     }
+}
+
+bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
+{
+    sf::Clock timer;
+    float pause = 0.27f;
+    int key = 0;
+    int toDo;
+    while (window.isOpen())
+    {
+        sf::Event event{};
+        while (window.pollEvent(event))
+        {
+            if(menu.getIsMenu())
+                menu.keyPressCheck(event);
+            else
+            {
+                toDo = keyPressCheck(event, window, key);
+                if (toDo == 1) return true;
+                else if (toDo == 0) return false;
+            }
+        }
+
+        window.clear();
+
+        if(menu.getIsMenu())
+            menu.showMenu(window);
+        else
+        {
+            fallingFigure(timer, pause);
+            buttonAction(key);
+
+            if(gameOver())
+            {
+                std::cout << "Finish";
+                exit(EXIT_SUCCESS);
+            }
+            draw(window);
+            showScore(window);
+            showBestPlayersBlock(window);
+        }
+        window.display();
+
+    }
+    writeFileBestPlayers("BestPlayersInfo.txt");
+    return false;
 }
 
 

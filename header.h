@@ -29,4 +29,6 @@ const int COUNT_PEOPLE = 5;
 
 int generateRandomNumber (int a, int b);
 
+
+
 #endif //TETRIS_HEADER_H

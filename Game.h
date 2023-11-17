@@ -21,7 +21,7 @@ public:
     PlayerInfo infoBlock[COUNT_PEOPLE];
 public:
     Game();
-    void keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window);
+    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);
     Figure*& getRandomFigure();
@@ -42,6 +42,8 @@ public:
     void showGameTime(sf::RenderWindow& window);
     void showScore (sf::RenderWindow& window);
     void checkStatisticBeforeSave();
+
+    bool drawWindow (sf::RenderWindow& window, GameMenu& menu);
 };
 
 
