@@ -18,7 +18,7 @@ protected:
     sf::Clock gameTime;
     std::string number;
 public:
-    PlayerInfo infoBlock[COUNT_PERSONS];
+    PlayerInfo infoBlock[COUNT_PEOPLE];
 public:
     Game();
     void keyPressCheck(sf::Event& event, int& key, sf::RenderWindow& window);
@@ -41,6 +41,7 @@ public:
     void scoreBooster (int& _lines_in_a_row);
     void showGameTime(sf::RenderWindow& window);
     void showScore (sf::RenderWindow& window);
+    void checkStatisticBeforeSave();
 };
 
 

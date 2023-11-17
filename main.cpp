@@ -1,6 +1,5 @@
 #include "Game.h"
 
-void showMenu(sf::RenderWindow& window);
 bool startGame(GameMenu& menu)
 {
     Game game;
@@ -14,7 +13,6 @@ bool startGame(GameMenu& menu)
     bool isPaused = true;
     while (window.isOpen())
     {
-
         sf::Event event{};
 
         while (window.pollEvent(event))
@@ -92,6 +90,7 @@ bool startGame(GameMenu& menu)
         window.display();
 
     }
+    game.writeFileBestPlayers("BestPlayersInfo.txt");
 }
 
 void gameRunning(GameMenu& menu)
@@ -103,5 +102,6 @@ int main()
 {
     GameMenu menu;
     gameRunning(menu);
+
     return 0;
 }

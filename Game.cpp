@@ -285,7 +285,7 @@ void Game::readFileBestPlayers(const char* fileName)
 
     for (auto & i : infoBlock)
     {
-        if (!(read >> i.nickName >> i.scope))
+        if (!(read >> i.nickName >> i.score))
         {
             throw ExceptionFile("Ошибка чтения данных из файла");
         }
@@ -294,29 +294,26 @@ void Game::readFileBestPlayers(const char* fileName)
 
 void Game::writeFileBestPlayers(const char* fileName)
 {
+    checkStatisticBeforeSave();
     std::ofstream input;
     input.open(fileName);
     if (!input.is_open()) {throw ExceptionFile("Ошибка открытия файла для записи");}
 
-    for (int i = 0; i < COUNT_PERSONS; ++i)
+    for (int i = 0; i < COUNT_PEOPLE; ++i)
     {
-        rewind(stdin);
-        std::cin.getline(infoBlock[i].nickName, 10);
-        rewind(stdin);
-        std::cin >> infoBlock[i].scope;
-        input << infoBlock[i].nickName << " " << infoBlock[i].scope << "\n";
+        input << infoBlock[i].nickName << " " << infoBlock[i].score << "\n";
     }
 }
 
 void Game::showBestPlayersBlock(sf::RenderWindow& window)
 {
     int offset_x = 70, offset_y = 0;
-    for (int i = 0; i < COUNT_PERSONS; ++i)
+    for (int i = 0; i < COUNT_PEOPLE; ++i)
     {
         text.setString(infoBlock[i].nickName);
         text.setPosition(static_cast<float>(175), static_cast<float>(195 + offset_y));
         window.draw(text);
-        number = std::to_string(infoBlock[i].scope);
+        number = std::to_string(infoBlock[i].score);
         text.setString(number);
         text.setPosition(static_cast<float>(175 + offset_x), static_cast<float>(195 + offset_y));
         window.draw(text);
@@ -378,9 +375,6 @@ void Game::showGameTime(sf::RenderWindow &window)
 {
     time = static_cast<int>(gameTime.getElapsedTime().asSeconds());
 
-
-
-
     if(time < 10)
     {
         number = std::to_string(time);
@@ -420,5 +414,23 @@ void Game::showGameTime(sf::RenderWindow &window)
     //1306 когда 01:89
     //1293 когда 23:88;
 }
+
+void Game::checkStatisticBeforeSave()
+{
+    for (int i = 0; i < COUNT_PEOPLE; ++i)
+    {
+        if (score > infoBlock[i].score)
+        {
+            for (int k = COUNT_PEOPLE-1; k >= i; --k)
+            {
+                infoBlock[k].score = infoBlock[k-1].score;
+            }
+            infoBlock[i].score = score;
+        }
+
+    }
+}
+
+
 
 

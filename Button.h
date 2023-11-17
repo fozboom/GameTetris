@@ -1,23 +1,23 @@
 #ifndef TETRIS_BUTTON_H
 #define TETRIS_BUTTON_H
 #include "header.h"
+#include <SFML/Audio.hpp>
 
-class Button {
+class Button: public Text
+{
 private:
-    sf::Image buttonImage;
-    sf::Texture buttonTexture;
-    sf::Sprite buttonSprite;
+    float width;
+    float height;
+
+    sf::SoundBuffer buffet;
+    sf::Sound sound;
+
     bool isPressed;
 
+    sf::RectangleShape button;
+
 public:
-
-    void press() {isPressed = true;}
-
-    void release() {isPressed = false;}
-
-    bool isButtonPressed() const {return isPressed;}
-
-    const sf::Sprite& getSprite() const {return buttonSprite;}
+    explicit Button(std::string& _someText, float w = 0, float h = 0);
 };
 
 
