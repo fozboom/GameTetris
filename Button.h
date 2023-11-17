@@ -3,7 +3,7 @@
 #include "header.h"
 #include <SFML/Audio.hpp>
 
-class Button: public Text
+class Button: public Text, public my_Sprite
 {
 private:
     float width;
@@ -11,13 +11,14 @@ private:
 
     sf::SoundBuffer buffet;
     sf::Sound sound;
-
     bool isPressed;
 
-    sf::RectangleShape button;
-
 public:
-    explicit Button(std::string& _someText, float w = 0, float h = 0);
+    Button() = delete;
+    explicit Button(std::string _someText, float w, float h, std::string fileName, float x, float y, std::string fontName, int size, float x_pos, float y_pos);
+    void draw(sf::RenderWindow& window) override;
+    float getWidth(){return width;}
+    float getHeight(){return height;}
 };
 
 

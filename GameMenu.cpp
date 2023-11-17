@@ -1,7 +1,7 @@
 #include "GameMenu.h"
 
-GameMenu::GameMenu(): buttonStart("buttonStart.png"),
-buttonResume("buttonResume.png"), buttonExit("buttonExit.png"), typeOfMenu(0), key(0), isMenu(true){}
+GameMenu::GameMenu(): buttonStart("images/buttonStart.png", 0, 0),
+buttonResume("images/buttonResume.png",0, 0), buttonExit("images/buttonExit.png",0, 0), typeOfMenu(0), key(0), isMenu(true){}
 
 void GameMenu::keyPressCheck(sf::Event& event)
 {

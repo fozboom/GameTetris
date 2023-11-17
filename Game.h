@@ -6,33 +6,43 @@ class Game
 {
 protected:
     Board field;
+
     Figure* currentFigure;
     Figure* nextFigure;
+
+    Button buttonRowsCount;
+    Button buttonPause;
+    Button buttonGameOver;
+
     std::vector<Figure*> figures;
     my_Sprite oneBlock;
+    my_Sprite pauseBoard;
     sf::Font font;
     sf::Text text;
     int lines_in_a_row;
-    int score = 10000;
+    int score;
     int time;
+    int countLines;
     sf::Clock gameTime;
     std::string number;
 public:
     PlayerInfo infoBlock[COUNT_PEOPLE];
 public:
     Game();
-    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key);
+    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key, Text& m);
+    int mousePressedCheck(sf::Event& event, sf::RenderWindow& window);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);
     Figure*& getRandomFigure();
     void getAllFigures();
+    void drawBoardImage (sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
     void drawNextFigureBlock(sf::RenderWindow& window);
     bool boundariesIsBroken ();
     void isLocked();
     int distanceToLocked ();
     void drawGrid(sf::RenderWindow& window);
-    bool gameOver();
+    bool gameOver(sf::RenderWindow& window, sf::Event& event);
     void lineFilled ();
     void deleteLine (int num, int count);
     void readFileBestPlayers(const char* fileName);

@@ -4,13 +4,24 @@
 
 #include "Button.h"
 
-#include <utility>
 
-Button::Button(std::string& _someText, float w, float h) : Text(_someText), width(w), height(h), isPressed(false)
+
+Button::Button(std::string _someText, float w, float h, std::string fileName, float x, float y, std::string fontName, int size, float x_pos, float y_pos) :
+my_Sprite(fileName, x , y), Text(_someText, fontName, size, x_pos, y_pos), width(w), height(h), isPressed(false)
 {
-    button.setSize(sf::Vector2f(width, height));
-    text.setPosition(button.getPosition());
+
 }
+
+void Button::draw(sf::RenderWindow &window)
+{
+    sprite.setPosition(x_coordinate, y_coordinate);
+    window.draw(sprite);
+
+}
+
+
+
+
 
 
 

@@ -2,7 +2,7 @@
 #include "Game.h"
 Board::Board(): width(WIDTH), height(HEIGHT)
 {
-    gridImage.loadFromFile("easy_level.png");
+    gridImage.loadFromFile("images/board.png");
     gridTexture.loadFromImage(gridImage);
     gridSprite.setTexture(gridTexture);
     initializeVector();
@@ -18,6 +18,8 @@ void Board::initializeVector()
             gameBoard[i][j] = 0;
         }
     }
+    for(int i = 1; i < WIDTH; ++i)
+        gameBoard[HEIGHT][i] = 1;
 
 }
 

@@ -16,6 +16,7 @@ const int COUNT_PEOPLE = 5;
 
 #include "Sprite.h"
 #include "Text.h"
+#include "Button.h"
 #include "GameMenu.h"
 #include "Board.h"
 #include "Figure.h"

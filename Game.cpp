@@ -1,72 +1,39 @@
 #include "Game.h"
 
 
-
-
-int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key)
-{
-    if (event.type == sf::Event::KeyPressed)
-    {
-        if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A)
-        {
-            key = 1;
-        }
-        if (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D)
-        {
-            key = 2;
-        }
-        if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
-        {
-            key = 3;
-        }
-        if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
-        {
-            key = 4;
-        }
-        if (event.key.code == sf::Keyboard::Space)
-        {
-            key = 5;
-        }
-        if (event.key.code == sf::Keyboard::RAlt)
-        {
-            window.close();
-        }
-        if (event.key.code == sf::Keyboard::R || (sf::IntRect(1109, 483, 110, 110).contains(sf::Mouse::getPosition(window))
-        && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
-        {
-            return 1;
-        }
-        if (event.key.code == sf::Keyboard::Q)
-        {
-            return 0;
-        }
-        if (event.key.code == sf::Keyboard::Escape ||
-        (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
-        && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
-        {
-            while (window.waitEvent(event))
-            {
-                if((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)||
-                   (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
-                    && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
-                    break;
-            }
-        }
-    }
-    return 3;
-}
-
-Game::Game():oneBlock("color_cubes.png"), field(), lines_in_a_row(0), score(0), time(10)
+Game::Game():
+buttonRowsCount("ROWS", 150, 250, "images/rows.png",160, 485, "fonts/D.ttf", 48, 240, 530),
+buttonPause("PAUSE", 120, 120, "images/pause.png", 1108, 615, "fonts/D.ttf", 24, 0,0),
+buttonGameOver("GameOver", 1448, 916, "images/gameOver.png", 0, 0, "fonts/D.ttf", 24, 0,0),
+oneBlock("images/color_cubes.png", 0, 0),
+pauseBoard("images/shadowBoard.png",0,0),
+field(),
+lines_in_a_row(0), score(0), time(10), countLines(0)
 {
     getAllFigures();
     readFileBestPlayers("BestPlayersInfo.txt");
     currentFigure = getRandomFigure();
     nextFigure = getRandomFigure();
     currentFigure->setDistanceToCollision(distanceToLocked());
-    font.loadFromFile("ZCOOLQingKeHuangYou-Regular.ttf");
+    font.loadFromFile("fonts/D.ttf");
     text.setFont(font);
     text.setCharacterSize(24);
-    text.setColor(sf::Color::White);
+    text.setFillColor(sf::Color::White);
+}
+
+void Game::draw(sf::RenderWindow& window)
+{
+    drawGrid(window);
+    buttonRowsCount.draw(window);
+    buttonPause.draw(window);
+    buttonRowsCount.drawNumber(window, countLines);
+    currentFigure->setDistanceToCollision(distanceToLocked());
+    currentFigure->drawFigure(window);
+    drawNextFigureBlock(window);
+    getAllFigures();
+    showGameTime(window);
+    showScore(window);
+    showBestPlayersBlock(window);
 }
 
 Figure*& Game::getRandomFigure()
@@ -91,15 +58,7 @@ Figure*& Game::getRandomFigure()
     return fig;
 }
 
-void Game::draw(sf::RenderWindow& window)
-{
-    drawGrid(window);
-    currentFigure->setDistanceToCollision(distanceToLocked());
-    currentFigure->drawFigure(window);
-    drawNextFigureBlock(window);
-    getAllFigures();
-    showGameTime(window);
-}
+
 
 void  Game::getAllFigures()
 {
@@ -137,12 +96,17 @@ void Game::isLocked()
     nextFigure = getRandomFigure();
 }
 
+void Game::drawBoardImage (sf::RenderWindow& window)
+{
+
+    field.drawGameBoard(window);
+}
+
 void Game::drawGrid(sf::RenderWindow& window)
 {
     std::vector<Block> tmp = currentFigure->newCondition();
 
 
-    field.drawGameBoard(window);
 
     for (int i = 0; i < HEIGHT; ++i)
     {
@@ -206,12 +170,36 @@ void Game::fallingFigure(sf::Clock& timer, float pause)
     }
 }
 
-bool Game::gameOver()
+bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
 {
     std::vector<Block> object = currentFigure->newCondition();
     for (Block& item: object)
+    {
         if (boundariesIsBroken() && (item.y == 0))
+        {
+
+            Text nickName(24, true, "fonts/D.ttf");
+            while(window.waitEvent(event))
+            {
+                if (event.type == sf::Event::TextEntered)
+                {
+                    nickName.typeOn(event, window);
+                }
+                if (event.type == sf::Event::KeyPressed)
+                {
+                    if (event.key.code == sf::Keyboard::Enter)
+                    {
+                        break;
+                    }
+                }
+                window.clear();
+                buttonGameOver.draw(window);
+                nickName.draw(window);
+                window.display();
+            }
             return true;
+        }
+    }
     return false;
 }
 
@@ -235,6 +223,7 @@ void Game::lineFilled()
         }
         if (!isFull && lines_in_a_row>0)
         {
+            countLines += lines_in_a_row;
             std::cout << lines_in_a_row << std::endl;
             deleteLine(i, lines_in_a_row);
             i+= lines_in_a_row;
@@ -263,7 +252,7 @@ void Game::deleteLine(int num, int count)
 
 int Game::distanceToLocked()
 {
-    int minDistance = 25;
+    int minDistance = 20;
 
     for (Block& item: currentFigure->getStatus())
     {
@@ -273,7 +262,7 @@ int Game::distanceToLocked()
             ++i;
         }
         if ((i-1) < minDistance)
-            minDistance = i - 1;
+            minDistance = i-1;
 
     }
 
@@ -394,7 +383,7 @@ void Game::showScore(sf::RenderWindow& window)
 
 void Game::showGameTime(sf::RenderWindow &window)
 {
-    time = static_cast<int>(gameTime.getElapsedTime().asSeconds());
+    time = gameTime.getElapsedTime().asSeconds();
 
     if(time < 10)
     {
@@ -430,10 +419,6 @@ void Game::showGameTime(sf::RenderWindow &window)
     text.setPosition(1293,45);
     window.draw(text);
 
-    //1335 когда до 10 секунд
-    //1323 - когда до 60 секунд
-    //1306 когда 01:89
-    //1293 когда 23:88;
 }
 
 void Game::checkStatisticBeforeSave()
@@ -442,15 +427,92 @@ void Game::checkStatisticBeforeSave()
     {
         if (score > infoBlock[i].score)
         {
-            for (int k = COUNT_PEOPLE-1; k >= i; --k)
+            for (int k = COUNT_PEOPLE-1; k > i; --k)
             {
                 infoBlock[k].score = infoBlock[k-1].score;
             }
-            infoBlock[i].score = score;
+            infoBlock[i].score = this->score;
+            break;
         }
 
     }
 }
+
+
+
+int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, Text& m)
+{
+
+    if (event.type == sf::Event::KeyPressed)
+    {
+        if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::A)
+        {
+            key = 1;
+            return 3;
+        }
+        if (event.key.code == sf::Keyboard::Right || event.key.code == sf::Keyboard::D)
+        {
+            key = 2;
+            return 3;
+        }
+        if (event.key.code == sf::Keyboard::Up || event.key.code == sf::Keyboard::W)
+        {
+            key = 3;
+            return 3;
+        }
+        if (event.key.code == sf::Keyboard::Down || event.key.code == sf::Keyboard::S)
+        {
+            key = 4;
+            return 3;
+        }
+        if (event.key.code == sf::Keyboard::Space)
+        {
+            key = 5;
+            return 3;
+        }
+        if (event.key.code == sf::Keyboard::RAlt)
+        {
+            writeFileBestPlayers("BestPlayersInfo.txt");
+            window.close();
+            return 3;
+        }
+        if (event.key.code == sf::Keyboard::LControl)
+        {
+            writeFileBestPlayers("BestPlayersInfo.txt");
+            return 1;
+        }
+
+        if (event.key.code == sf::Keyboard::RAlt)
+        {
+            writeFileBestPlayers("BestPlayersInfo.txt");
+            return 0;
+        }
+        if (event.key.code == sf::Keyboard::Escape)
+        {
+            buttonPause.updateSprite("images/unpause.png");
+
+            while (window.waitEvent(event))
+            {
+                window.clear();
+                window.draw(pauseBoard.sprite);
+                draw(window);
+                window.display();
+                if((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)||
+                   (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+                    && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+                {
+                    buttonPause.updateSprite("images/pause.png");
+                    break;
+                }
+            }
+
+        }
+
+    }
+    return mousePressedCheck(event, window);
+
+}
+
 
 bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
 {
@@ -458,19 +520,26 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
     float pause = 0.27f;
     int key = 0;
     int toDo;
+    Text m(24, true, "fonts/D.ttf");
     while (window.isOpen())
     {
         sf::Event event{};
         while (window.pollEvent(event))
         {
+            if(gameOver(window, event))
+            {
+
+            }
             if(menu.getIsMenu())
                 menu.keyPressCheck(event);
             else
             {
-                toDo = keyPressCheck(event, window, key);
+                toDo = keyPressCheck(event, window, key, m);
                 if (toDo == 1) return true;
                 else if (toDo == 0) return false;
+
             }
+
         }
 
         window.clear();
@@ -482,22 +551,52 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
             fallingFigure(timer, pause);
             buttonAction(key);
 
-            if(gameOver())
+            if(gameOver(window, event))
             {
-                std::cout << "Finish";
-                exit(EXIT_SUCCESS);
+                //std::cout << "Finish";
+                //exit(EXIT_SUCCESS);
             }
+            drawBoardImage(window);
             draw(window);
-            showScore(window);
-            showBestPlayersBlock(window);
+
+            m.draw(window);
         }
         window.display();
 
     }
-    writeFileBestPlayers("BestPlayersInfo.txt");
-    return false;
+
+
 }
 
 
+int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
+{
+    if (sf::IntRect(1109, 483, 110, 110).contains(sf::Mouse::getPosition(window))
+        && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        return 1;
+    }
+    if ((sf::IntRect(buttonPause.getPositionX(), buttonPause.getPositionY(),
+                     buttonPause.getWidth(), buttonPause.getHeight()).contains(sf::Mouse::getPosition(window))
+                      && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+    {
+        buttonPause.updateSprite("images/unpause.png");
+        window.clear();
+        window.draw(pauseBoard.sprite);
+        draw(window);
+        window.display();
+        while (window.waitEvent(event))
+        {
+            if((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)||
+               (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
+                && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
+            {
+                buttonPause.updateSprite("images/pause.png");
+                break;
+            }
+        }
+    }
+    return 3;
+}
 
 

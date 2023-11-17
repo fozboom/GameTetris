@@ -16,7 +16,8 @@ bool startGame(GameMenu& menu)
     Game game;
     //game.writeFileBestPlayers("BestPlayersInfo.txt");
     sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Tetris", sf::Style::Fullscreen);
-    game.drawWindow(window, menu);
+    if(game.drawWindow(window, menu)) return true;
+    return false;
 }
 
 void gameRunning(GameMenu& menu)

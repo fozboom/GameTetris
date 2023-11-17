@@ -10,22 +10,32 @@ struct my_Sprite
     float x_coordinate;
     float y_coordinate;
     my_Sprite() = delete;
-    explicit my_Sprite(const char * fileName) : x_coordinate(0), y_coordinate(0)
+    explicit my_Sprite(std::string fileName, float x, float y) : x_coordinate(x), y_coordinate(y)
     {
         image.loadFromFile(fileName);
         texture.loadFromImage(image);
         sprite.setTexture(texture);
     }
 
-    void setPosition (int x, int y)
+    virtual void setPosition (float x, float y)
     {
         x_coordinate = x;
         y_coordinate = y;
-        sprite.setPosition(static_cast<float>(x), static_cast<float>(y));
+        sprite.setPosition(x, y);
     }
 
     float getPositionX () const {return x_coordinate;}
     float getPositionY () const {return y_coordinate;}
+
+    void updateSprite(std::string fileName)
+    {
+        image.loadFromFile(fileName);
+
+        texture.loadFromImage(image);
+        sprite.setTexture(texture);
+
+
+    }
 };
 
 struct PlayerInfo

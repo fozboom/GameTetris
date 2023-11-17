@@ -12,7 +12,7 @@ protected:
     sf::Sprite gridSprite;
     int width;
     int height;
-    int gameBoard[HEIGHT][WIDTH];
+    int gameBoard[HEIGHT + 1][WIDTH];
 public:
     Board();
     sf::Sprite& getGridSprite() {return gridSprite;}
