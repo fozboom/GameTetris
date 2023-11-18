@@ -40,14 +40,14 @@ struct my_Sprite
 
 struct PlayerInfo
 {
-    char nickName [11];
+    std::string nickName;
     int score;
 
 public:
     PlayerInfo& operator = (const PlayerInfo& obj)
     {
         this->score = obj.score;
-        strcpy(this->nickName, obj.nickName);
+        this->nickName = std::move(obj.nickName);
         return *this;
     }
 };

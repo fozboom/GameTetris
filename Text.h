@@ -35,12 +35,12 @@ public:
         font.loadFromFile(fontName);
         text.setFont(font);
         text.setCharacterSize(size);
-        text.setFillColor(sf::Color::White);
-        text.setPosition(100,100);
+        text.setFillColor(sf::Color(4,82,107));
+        text.setPosition(675,410);
         isSelected = sel;
         if (sel)
         {
-            text.setString("Hello");
+            text.setString("|");
         }
         else
             text.setString("");
@@ -59,7 +59,7 @@ public:
                 deleteLastChar();
             }
         }
-        text.setString(txt.str() + "_");
+        text.setString(txt.str() + "|");
     }
 
     void deleteLastChar ()
@@ -171,10 +171,6 @@ public:
             }
         }
 
-       // text.setString(txt.str() + "|");
-        text.setPosition(220,220);
-        //window.draw(text);
-        std::cout << txt.str() << "\n";
 
 
 

@@ -25,11 +25,12 @@ protected:
     int countLines;
     sf::Clock gameTime;
     std::string number;
+    std::string nickName;
 public:
     PlayerInfo infoBlock[COUNT_PEOPLE];
 public:
     Game();
-    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key, Text& m);
+    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key);
     int mousePressedCheck(sf::Event& event, sf::RenderWindow& window);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);

@@ -177,24 +177,29 @@ bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
     {
         if (boundariesIsBroken() && (item.y == 0))
         {
+            Text nick(30, true, "fonts/D.ttf");
+            window.clear();
+            buttonGameOver.draw(window);
+            nick.draw(window);
+            window.display();
 
-            Text nickName(24, true, "fonts/D.ttf");
             while(window.waitEvent(event))
             {
                 if (event.type == sf::Event::TextEntered)
                 {
-                    nickName.typeOn(event, window);
+                    nick.typeOn(event, window);
                 }
                 if (event.type == sf::Event::KeyPressed)
                 {
                     if (event.key.code == sf::Keyboard::Enter)
                     {
+                        nickName = nick.getString();
                         break;
                     }
                 }
                 window.clear();
                 buttonGameOver.draw(window);
-                nickName.draw(window);
+                nick.draw(window);
                 window.display();
             }
             return true;
@@ -317,7 +322,7 @@ void Game::writeFileBestPlayers(const char* fileName)
 
 void Game::showBestPlayersBlock(sf::RenderWindow& window)
 {
-    int offset_x = 70, offset_y = 0;
+    int offset_x = 90, offset_y = 0;
     for (int i = 0; i < COUNT_PEOPLE; ++i)
     {
         text.setString(infoBlock[i].nickName);
@@ -325,7 +330,7 @@ void Game::showBestPlayersBlock(sf::RenderWindow& window)
         window.draw(text);
         number = std::to_string(infoBlock[i].score);
         text.setString(number);
-        text.setPosition(static_cast<float>(175 + offset_x), static_cast<float>(195 + offset_y));
+        text.setPosition(static_cast<float>(185 + offset_x), static_cast<float>(195 + offset_y));
         window.draw(text);
         offset_y += 30;
     }
@@ -430,8 +435,10 @@ void Game::checkStatisticBeforeSave()
             for (int k = COUNT_PEOPLE-1; k > i; --k)
             {
                 infoBlock[k].score = infoBlock[k-1].score;
+                infoBlock[k].nickName = infoBlock[k-1].nickName;
             }
             infoBlock[i].score = this->score;
+            infoBlock[i].nickName = this->nickName;
             break;
         }
 
@@ -440,7 +447,7 @@ void Game::checkStatisticBeforeSave()
 
 
 
-int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, Text& m)
+int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key)
 {
 
     if (event.type == sf::Event::KeyPressed)
@@ -520,21 +527,16 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
     float pause = 0.27f;
     int key = 0;
     int toDo;
-    Text m(24, true, "fonts/D.ttf");
     while (window.isOpen())
     {
         sf::Event event{};
         while (window.pollEvent(event))
         {
-            if(gameOver(window, event))
-            {
-
-            }
             if(menu.getIsMenu())
                 menu.keyPressCheck(event);
             else
             {
-                toDo = keyPressCheck(event, window, key, m);
+                toDo = keyPressCheck(event, window, key);
                 if (toDo == 1) return true;
                 else if (toDo == 0) return false;
 
@@ -553,13 +555,13 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
 
             if(gameOver(window, event))
             {
-                //std::cout << "Finish";
-                //exit(EXIT_SUCCESS);
+                menu.setIsMenu(true);
+                writeFileBestPlayers("BestPlayersInfo.txt");
+                return true;
             }
             drawBoardImage(window);
             draw(window);
 
-            m.draw(window);
         }
         window.display();
 

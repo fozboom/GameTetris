@@ -17,6 +17,7 @@ public:
     void keyPressCheck(sf::Event& event);
     void buttonAction();
     bool getIsMenu() const {return isMenu;}
+    void setIsMenu(bool x){isMenu = x;}
 };
 
 
