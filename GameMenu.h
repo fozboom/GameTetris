@@ -2,6 +2,9 @@
 #define TETRIS_GAMEMENU_H
 #include "header.h"
 
+
+class Game;
+
 class GameMenu
 {
 private:
@@ -13,11 +16,13 @@ private:
     bool isMenu;
 public:
     GameMenu();
-    void showMenu(sf::RenderWindow& window);
+    void showMenu(sf::RenderWindow& window, Game& game);
     void keyPressCheck(sf::Event& event);
-    void buttonAction();
+    void buttonAction(Game& game);
     bool getIsMenu() const {return isMenu;}
     void setIsMenu(bool x){isMenu = x;}
+    void saveGameToFile(std::string fileName, Game& game);
+    void loadGameFromFile (std::string fileName,Game& game);
 };
 
 

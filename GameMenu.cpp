@@ -1,4 +1,5 @@
 #include "GameMenu.h"
+#include "Game.h"
 
 GameMenu::GameMenu(): buttonStart("images/buttonStart.png", 0, 0),
 buttonResume("images/buttonResume.png",0, 0), buttonExit("images/buttonExit.png",0, 0), typeOfMenu(0), key(0), isMenu(true){}
@@ -24,10 +25,10 @@ void GameMenu::keyPressCheck(sf::Event& event)
 
 
 
-void GameMenu::showMenu(sf::RenderWindow& window)
+void GameMenu::showMenu(sf::RenderWindow& window, Game& game)
 {
 
-    buttonAction();
+    buttonAction(game);
     if (typeOfMenu == 0)
         window.draw(buttonStart.sprite);
     else if (typeOfMenu == 1)
@@ -36,7 +37,7 @@ void GameMenu::showMenu(sf::RenderWindow& window)
 
 }
 
-void GameMenu::buttonAction()
+void GameMenu::buttonAction(Game& game)
 {
     if (key == 1)
     {
@@ -54,8 +55,15 @@ void GameMenu::buttonAction()
     {
         if (typeOfMenu == 0)
             isMenu = false;
+        else if (typeOfMenu == 1)
+        {
+            game.loadGameFromFile("Game");
+            isMenu = false;
+        }
         else
             exit(EXIT_SUCCESS);
     }
     key = 0;
 }
+
+

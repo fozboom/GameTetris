@@ -35,8 +35,8 @@ public:
         font.loadFromFile(fontName);
         text.setFont(font);
         text.setCharacterSize(size);
-        text.setFillColor(sf::Color(4,82,107));
-        text.setPosition(675,410);
+        text.setFillColor(sf::Color(20,122,122));
+        text.setPosition(670,420);
         isSelected = sel;
         if (sel)
         {

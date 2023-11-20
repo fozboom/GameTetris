@@ -13,6 +13,7 @@ protected:
     Button buttonRowsCount;
     Button buttonPause;
     Button buttonGameOver;
+    Button buttonMusic;
 
     std::vector<Figure*> figures;
     my_Sprite oneBlock;
@@ -26,11 +27,13 @@ protected:
     sf::Clock gameTime;
     std::string number;
     std::string nickName;
+
+    sf::Music music;
 public:
     PlayerInfo infoBlock[COUNT_PEOPLE];
 public:
     Game();
-    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key);
+    int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key, GameMenu& menu);
     int mousePressedCheck(sf::Event& event, sf::RenderWindow& window);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);
@@ -53,8 +56,15 @@ public:
     void showGameTime(sf::RenderWindow& window);
     void showScore (sf::RenderWindow& window);
     void checkStatisticBeforeSave();
-
     bool drawWindow (sf::RenderWindow& window, GameMenu& menu);
+    int getFieldGameBoard(int i, int j){return field.getGameBoard(i, j);}
+    void setFieldGameBoard(int i, int j, int val){return field.setGameBoard(i, j, val);}
+    int getScore()const {return score;}
+    int getTime() const {return time;}
+    void setScore (int _score){this->score = _score;}
+    void setTime (int _time){ this->time = _time;}
+    void loadGameFromFile(std::string fileName);
+    void saveGameToFile(std::string fileName);
 };
 
 

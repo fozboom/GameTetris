@@ -5,11 +5,15 @@ Game::Game():
 buttonRowsCount("ROWS", 150, 250, "images/rows.png",160, 485, "fonts/D.ttf", 48, 240, 530),
 buttonPause("PAUSE", 120, 120, "images/pause.png", 1108, 615, "fonts/D.ttf", 24, 0,0),
 buttonGameOver("GameOver", 1448, 916, "images/gameOver.png", 0, 0, "fonts/D.ttf", 24, 0,0),
+buttonMusic("Music",62,34, "images/buttonON.png", 220,684, "fonts/D.ttf",24, 0, 0),
 oneBlock("images/color_cubes.png", 0, 0),
 pauseBoard("images/shadowBoard.png",0,0),
 field(),
 lines_in_a_row(0), score(0), time(10), countLines(0)
 {
+    music.openFromFile("music/music.ogg");
+    music.setVolume(30);
+    music.play();
     getAllFigures();
     readFileBestPlayers("BestPlayersInfo.txt");
     currentFigure = getRandomFigure();
@@ -27,6 +31,7 @@ void Game::draw(sf::RenderWindow& window)
     buttonRowsCount.draw(window);
     buttonPause.draw(window);
     buttonRowsCount.drawNumber(window, countLines);
+    buttonMusic.draw(window);
     currentFigure->setDistanceToCollision(distanceToLocked());
     currentFigure->drawFigure(window);
     drawNextFigureBlock(window);
@@ -158,7 +163,8 @@ void Game::buttonAction(int& key)
 
 void Game::fallingFigure(sf::Clock& timer, float pause)
 {
-    if (timer.getElapsedTime().asSeconds() >= pause) {
+    if (timer.getElapsedTime().asSeconds() >= pause)
+    {
         timer.restart();
         currentFigure->move(0,1);
         if(boundariesIsBroken())
@@ -202,6 +208,8 @@ bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
                 nick.draw(window);
                 window.display();
             }
+            field.initializeVector();
+            saveGameToFile("Game");
             return true;
         }
     }
@@ -262,7 +270,7 @@ int Game::distanceToLocked()
     for (Block& item: currentFigure->getStatus())
     {
         int i = 0;
-        while (field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0 && i < HEIGHT - 1)
+        while ((field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0) && i < HEIGHT - 1)
         {
             ++i;
         }
@@ -447,7 +455,7 @@ void Game::checkStatisticBeforeSave()
 
 
 
-int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key)
+int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, GameMenu& menu)
 {
 
     if (event.type == sf::Event::KeyPressed)
@@ -479,25 +487,20 @@ int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key)
         }
         if (event.key.code == sf::Keyboard::RAlt)
         {
-            writeFileBestPlayers("BestPlayersInfo.txt");
+            saveGameToFile("Game");
             window.close();
-            return 3;
+            return 0;
         }
         if (event.key.code == sf::Keyboard::LControl)
         {
-            writeFileBestPlayers("BestPlayersInfo.txt");
             return 1;
         }
 
-        if (event.key.code == sf::Keyboard::RAlt)
-        {
-            writeFileBestPlayers("BestPlayersInfo.txt");
-            return 0;
-        }
+
         if (event.key.code == sf::Keyboard::Escape)
         {
             buttonPause.updateSprite("images/unpause.png");
-
+            buttonPause.playMusic();
             while (window.waitEvent(event))
             {
                 window.clear();
@@ -536,10 +539,9 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
                 menu.keyPressCheck(event);
             else
             {
-                toDo = keyPressCheck(event, window, key);
+                toDo = keyPressCheck(event, window, key, menu);
                 if (toDo == 1) return true;
                 else if (toDo == 0) return false;
-
             }
 
         }
@@ -547,7 +549,7 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
         window.clear();
 
         if(menu.getIsMenu())
-            menu.showMenu(window);
+            menu.showMenu(window, *this);
         else
         {
             fallingFigure(timer, pause);
@@ -576,6 +578,7 @@ int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
     if (sf::IntRect(1109, 483, 110, 110).contains(sf::Mouse::getPosition(window))
         && sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
+
         return 1;
     }
     if ((sf::IntRect(buttonPause.getPositionX(), buttonPause.getPositionY(),
@@ -583,6 +586,7 @@ int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
                       && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
     {
         buttonPause.updateSprite("images/unpause.png");
+        buttonPause.playMusic();
         window.clear();
         window.draw(pauseBoard.sprite);
         draw(window);
@@ -598,7 +602,79 @@ int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
             }
         }
     }
+
+    if (sf::IntRect(220, 684, 62, 34).contains(sf::Mouse::getPosition(window))
+        && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+    {
+        if(!buttonMusic.getIsPressed())
+        {
+            music.pause();
+            buttonMusic.updateSprite("images/buttonOFF.png");
+            buttonMusic.setIsPressed(true);
+        }
+        else
+        {
+            music.play();
+            buttonMusic.updateSprite("images/buttonON.png");
+            buttonMusic.setIsPressed(false);
+        }
+    }
     return 3;
 }
+
+void Game::saveGameToFile(std::string fileName)
+{
+    std::ofstream outFile(fileName, std::ios::binary);
+
+    if (!outFile.is_open()) {
+        std::cerr << "Error: Unable to open file for writing." << std::endl;
+        return;
+    }
+
+
+    outFile.write(reinterpret_cast<const char*>(&score), sizeof(int));
+    outFile.write(reinterpret_cast<const char*>(&time), sizeof(int));
+
+    int cellValue;
+    for (int i = 0; i < HEIGHT; ++i)
+    {
+        for (int j = 0; j < WIDTH; ++j)
+        {
+            cellValue = field.getGameBoard(i,j);
+            outFile.write(reinterpret_cast<const char*>(&cellValue), sizeof(int));
+        }
+    }
+
+    outFile.close();
+}
+
+void Game::loadGameFromFile(std::string fileName)
+{
+    std::ifstream inFile(fileName, std::ios::binary);
+
+    if (!inFile.is_open())
+    {
+        std::cerr << "Error: Unable to open file for reading." << std::endl;
+        return;
+    }
+
+    inFile.read(reinterpret_cast<char*>(&score), sizeof(int));
+    inFile.read(reinterpret_cast<char*>(&time), sizeof(int));
+
+    int cellValue;
+    for (int i = 0; i < HEIGHT; ++i)
+    {
+        for (int j = 0; j < WIDTH; ++j)
+        {
+            inFile.read(reinterpret_cast<char*>(&cellValue), sizeof(int));
+            field.setGameBoard(i, j, cellValue);
+        }
+    }
+
+    inFile.close();
+}
+
+
+
 
 

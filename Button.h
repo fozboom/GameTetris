@@ -9,7 +9,7 @@ private:
     float width;
     float height;
 
-    sf::SoundBuffer buffet;
+    sf::SoundBuffer buffer;
     sf::Sound sound;
     bool isPressed;
 
@@ -19,6 +19,9 @@ public:
     void draw(sf::RenderWindow& window) override;
     float getWidth(){return width;}
     float getHeight(){return height;}
+    void playMusic(){sound.play();}
+    bool getIsPressed(){return isPressed;}
+    void setIsPressed(bool val){isPressed = val;}
 };
 
 
