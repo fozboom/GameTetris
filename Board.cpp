@@ -18,7 +18,7 @@ void Board::initializeVector()
             gameBoard[i][j] = 0;
         }
     }
-    for(int i = 1; i < WIDTH; ++i)
+    for(int i = 0; i < WIDTH; ++i)
         gameBoard[HEIGHT][i] = 1;
 
 }

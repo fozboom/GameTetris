@@ -10,10 +10,11 @@ protected:
     Figure* currentFigure;
     Figure* nextFigure;
 
-    Button buttonRowsCount;
     Button buttonPause;
-    Button buttonGameOver;
+    Button buttonRestart;
     Button buttonMusic;
+    Button buttonGameOver;
+    Button buttonRowsCount;
 
     std::vector<Figure*> figures;
     my_Sprite oneBlock;
@@ -23,12 +24,16 @@ protected:
     int lines_in_a_row;
     int score;
     int time;
+    int fileTime;
+    int tmpTime;
     int countLines;
     sf::Clock gameTime;
     std::string number;
     std::string nickName;
 
     sf::Music music;
+    bool isLoadFromFile;
+
 public:
     PlayerInfo infoBlock[COUNT_PEOPLE];
 public:
@@ -65,6 +70,7 @@ public:
     void setTime (int _time){ this->time = _time;}
     void loadGameFromFile(std::string fileName);
     void saveGameToFile(std::string fileName);
+    void setIsLoadFromFile(bool val){isLoadFromFile = val;}
 };
 
 

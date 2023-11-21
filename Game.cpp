@@ -2,24 +2,25 @@
 
 
 Game::Game():
-buttonRowsCount("ROWS", 150, 250, "images/rows.png",160, 485, "fonts/D.ttf", 48, 240, 530),
-buttonPause("PAUSE", 120, 120, "images/pause.png", 1108, 615, "fonts/D.ttf", 24, 0,0),
-buttonGameOver("GameOver", 1448, 916, "images/gameOver.png", 0, 0, "fonts/D.ttf", 24, 0,0),
-buttonMusic("Music",62,34, "images/buttonON.png", 220,684, "fonts/D.ttf",24, 0, 0),
-oneBlock("images/color_cubes.png", 0, 0),
-pauseBoard("images/shadowBoard.png",0,0),
-field(),
-lines_in_a_row(0), score(0), time(10), countLines(0)
+        buttonRowsCount("ROWS", 150, 250, "./images/rows.png",160, 485, "./fonts/D.ttf", 48, 240, 530),
+        buttonRestart("RESTART",111,112, "./images/restart.png",1110,478,"./fonts/D.ttf",24,0,0),
+        buttonPause("PAUSE", 120, 120, "./images/pause.png", 1108, 615, "./fonts/D.ttf", 24, 0,0),
+        buttonGameOver("GameOver", 1448, 916, "./images/gameOver.png", 0, 0, "./fonts/D.ttf", 24, 0,0),
+        buttonMusic("Music",62,34, "./images/buttonON.png", 220,684, "./fonts/D.ttf",24, 0, 0),
+        oneBlock("./images/color_cubes.png", 0, 0),
+        pauseBoard("./images/shadowBoard.png",0,0),
+        field(),
+        lines_in_a_row(0), score(0), time(10), countLines(0), isLoadFromFile(false), fileTime(0), tmpTime(0)
 {
-    music.openFromFile("music/music.ogg");
+    music.openFromFile("./music/music.ogg");
     music.setVolume(30);
     music.play();
     getAllFigures();
-    readFileBestPlayers("BestPlayersInfo.txt");
+    readFileBestPlayers("./BestPlayersInfo.txt");
     currentFigure = getRandomFigure();
     nextFigure = getRandomFigure();
     currentFigure->setDistanceToCollision(distanceToLocked());
-    font.loadFromFile("fonts/D.ttf");
+    font.loadFromFile("./fonts/D.ttf");
     text.setFont(font);
     text.setCharacterSize(24);
     text.setFillColor(sf::Color::White);
@@ -30,6 +31,7 @@ void Game::draw(sf::RenderWindow& window)
     drawGrid(window);
     buttonRowsCount.draw(window);
     buttonPause.draw(window);
+    buttonRestart.draw(window);
     buttonRowsCount.drawNumber(window, countLines);
     buttonMusic.draw(window);
     currentFigure->setDistanceToCollision(distanceToLocked());
@@ -183,7 +185,7 @@ bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
     {
         if (boundariesIsBroken() && (item.y == 0))
         {
-            Text nick(30, true, "fonts/D.ttf");
+            Text nick(30, true, "./fonts/D.ttf");
             window.clear();
             buttonGameOver.draw(window);
             nick.draw(window);
@@ -396,7 +398,7 @@ void Game::showScore(sf::RenderWindow& window)
 
 void Game::showGameTime(sf::RenderWindow &window)
 {
-    time = gameTime.getElapsedTime().asSeconds();
+    time = fileTime + tmpTime + gameTime.getElapsedTime().asSeconds();
 
     if(time < 10)
     {
@@ -488,8 +490,8 @@ int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, G
         if (event.key.code == sf::Keyboard::RAlt)
         {
             saveGameToFile("Game");
-            window.close();
-            return 0;
+            menu.setIsMenu(true);
+            return 1;
         }
         if (event.key.code == sf::Keyboard::LControl)
         {
@@ -499,7 +501,8 @@ int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, G
 
         if (event.key.code == sf::Keyboard::Escape)
         {
-            buttonPause.updateSprite("images/unpause.png");
+            int tmp= time - fileTime;
+            buttonPause.updateSprite("./images/unpause.png");
             buttonPause.playMusic();
             while (window.waitEvent(event))
             {
@@ -511,11 +514,12 @@ int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, G
                    (sf::IntRect(1104, 619, 120, 120).contains(sf::Mouse::getPosition(window))
                     && sf::Mouse::isButtonPressed(sf::Mouse::Left)))
                 {
-                    buttonPause.updateSprite("images/pause.png");
+                    buttonPause.updateSprite("./images/pause.png");
                     break;
                 }
             }
-
+            gameTime.restart();
+            tmpTime = tmp;
         }
 
     }
@@ -558,7 +562,7 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
             if(gameOver(window, event))
             {
                 menu.setIsMenu(true);
-                writeFileBestPlayers("BestPlayersInfo.txt");
+                writeFileBestPlayers("./BestPlayersInfo.txt");
                 return true;
             }
             drawBoardImage(window);
@@ -575,10 +579,10 @@ bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
 
 int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
 {
-    if (sf::IntRect(1109, 483, 110, 110).contains(sf::Mouse::getPosition(window))
+    if (sf::IntRect(1110, 478, 111, 112).contains(sf::Mouse::getPosition(window))
         && sf::Mouse::isButtonPressed(sf::Mouse::Left))
     {
-
+        buttonRestart.playMusic();
         return 1;
     }
     if ((sf::IntRect(buttonPause.getPositionX(), buttonPause.getPositionY(),
@@ -608,12 +612,14 @@ int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
     {
         if(!buttonMusic.getIsPressed())
         {
+            buttonMusic.playMusic();
             music.pause();
             buttonMusic.updateSprite("images/buttonOFF.png");
             buttonMusic.setIsPressed(true);
         }
         else
         {
+            buttonMusic.playMusic();
             music.play();
             buttonMusic.updateSprite("images/buttonON.png");
             buttonMusic.setIsPressed(false);
@@ -634,6 +640,7 @@ void Game::saveGameToFile(std::string fileName)
 
     outFile.write(reinterpret_cast<const char*>(&score), sizeof(int));
     outFile.write(reinterpret_cast<const char*>(&time), sizeof(int));
+    outFile.write(reinterpret_cast<const char*>(&countLines), sizeof(int));
 
     int cellValue;
     for (int i = 0; i < HEIGHT; ++i)
@@ -659,7 +666,9 @@ void Game::loadGameFromFile(std::string fileName)
     }
 
     inFile.read(reinterpret_cast<char*>(&score), sizeof(int));
-    inFile.read(reinterpret_cast<char*>(&time), sizeof(int));
+    inFile.read(reinterpret_cast<char*>(&fileTime), sizeof(int));
+    inFile.read(reinterpret_cast<char*>(&countLines), sizeof(int));
+    gameTime.restart();
 
     int cellValue;
     for (int i = 0; i < HEIGHT; ++i)
