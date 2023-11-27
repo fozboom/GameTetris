@@ -30,18 +30,18 @@ protected:
     int type;
 public:
     Figure();
-    int getType() const {return type;}
-    int getColor() const {return color;}
-    int getRotation()const {return rotationStatus;}
-    void setDistanceToCollision(int x){distanceToCollision = x;}
-    sf::Sprite& getCubeSprite() {return cubeImage.sprite;}
+    int getType() const;
+    int getColor() const;
+    void setDistanceToCollision(int x);
+    sf::Sprite& getCubeSprite();
     void drawFigure(sf::RenderWindow& window);
     void move(int xPos, int yPos);
-    std::vector<Block> newCondition ();
-    virtual void rotateTetromino (bool flag) = 0;
-    std::vector<Block>& getStatus(){return status;}
-    int get_offset_x() const{return offsetX;}
-    int get_offset_y() const{return offsetY;}
+    std::vector<Block> calculateMovedPosition ();
+    std::vector<Block>& getStatus();
+    int get_offset_x() const;
+    int get_offset_y() const;
+    virtual void rotateFigure (bool flag) = 0;
+    virtual ~Figure();
 };
 
 class J_Block: public Figure
@@ -59,7 +59,7 @@ public:
         status = allRotationOptions[0];
         heightOfBlock = 3;
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
         if (flag)
         {
@@ -85,7 +85,7 @@ public:
         }
         status = allRotationOptions[rotationStatus];
     }
-
+    ~J_Block() override {};
 };
 
 class Z_Block: public Figure
@@ -101,7 +101,7 @@ public:
         heightOfBlock = 2;
         status = allRotationOptions[0];
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
         if (flag)
         {
@@ -122,6 +122,7 @@ public:
         }
         status = allRotationOptions[rotationStatus];
     }
+    ~Z_Block() override {};
 };
 
 class T_Block: public Figure
@@ -139,7 +140,7 @@ public:
         status = allRotationOptions[0];
         heightOfBlock = 2;
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
         if (flag)
         {
@@ -165,6 +166,7 @@ public:
         }
         status = allRotationOptions[rotationStatus];
     }
+    ~T_Block() override {};
 };
 
 class S_Block: public Figure
@@ -180,7 +182,7 @@ public:
         status = allRotationOptions[0];
         heightOfBlock = 2;
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
         if (flag)
         {
@@ -201,6 +203,7 @@ public:
         }
         status = allRotationOptions[rotationStatus];
     }
+    ~S_Block() override {};
 };
 
 class L_Block: public Figure
@@ -218,7 +221,7 @@ public:
         status = allRotationOptions[0];
         heightOfBlock = 3;
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
         if (flag)
         {
@@ -244,6 +247,7 @@ public:
         }
         status = allRotationOptions[rotationStatus];
     }
+    ~L_Block() override {};
 };
 
 class I_Block: public Figure
@@ -259,7 +263,7 @@ public:
         status = allRotationOptions[0];
         heightOfBlock = 4;
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
         if (flag)
         {
@@ -280,6 +284,7 @@ public:
         }
         status = allRotationOptions[rotationStatus];
     }
+    ~I_Block() override {};
 };
 
 class O_Block: public Figure
@@ -295,10 +300,11 @@ public:
         status = allRotationOptions[0];
         heightOfBlock = 2;
     }
-    void rotateTetromino(bool flag) override
+    void rotateFigure(bool flag) override
     {
 
     }
+    ~O_Block() override {};
 };
 
 #endif //TETRIS_FIGURE_H

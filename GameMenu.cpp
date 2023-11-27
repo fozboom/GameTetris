@@ -2,7 +2,7 @@
 #include "Game.h"
 
 GameMenu::GameMenu(): buttonStart("images/buttonStart.png", 0, 0),
-buttonResume("images/buttonResume.png",0, 0), buttonExit("images/buttonExit.png",0, 0), typeOfMenu(0), key(0), isMenu(true){}
+                      buttonResume("images/buttonResume.png",0, 0), buttonExit("images/buttonExit.png",0, 0), selectedMenuOption(0), key(0), isMenu(true){}
 
 void GameMenu::keyPressCheck(sf::Event& event)
 {
@@ -29,9 +29,9 @@ void GameMenu::showMenu(sf::RenderWindow& window, Game& game)
 {
 
     buttonAction(game);
-    if (typeOfMenu == 0)
+    if (selectedMenuOption == 0)
         window.draw(buttonStart.sprite);
-    else if (typeOfMenu == 1)
+    else if (selectedMenuOption == 1)
         window.draw(buttonResume.sprite);
     else window.draw(buttonExit.sprite);
 
@@ -41,29 +41,41 @@ void GameMenu::buttonAction(Game& game)
 {
     if (key == 1)
     {
-        typeOfMenu--;
-        if (typeOfMenu < 0)
-            typeOfMenu = 2;
+        selectedMenuOption--;
+        if (selectedMenuOption < 0)
+            selectedMenuOption = 2;
     }
     if (key == 2)
     {
-        typeOfMenu++;
-        if (typeOfMenu > 2)
-            typeOfMenu = 0;
+        selectedMenuOption++;
+        if (selectedMenuOption > 2)
+            selectedMenuOption = 0;
     }
     if (key == 3)
     {
-        if (typeOfMenu == 0)
+        if (selectedMenuOption == 0)
             isMenu = false;
-        else if (typeOfMenu == 1)
+        else if (selectedMenuOption == 1)
         {
             game.loadGameFromFile("Game");
             isMenu = false;
         }
         else
+        {
+
             exit(EXIT_SUCCESS);
+        }
     }
     key = 0;
+}
+
+bool GameMenu::getIsMenu() const
+{
+    return isMenu;
+}
+void GameMenu::setIsMenu(bool x)
+{
+    isMenu = x;
 }
 
 

@@ -15,13 +15,13 @@ protected:
     int gameBoard[HEIGHT + 1][WIDTH];
 public:
     Board();
-    sf::Sprite& getGridSprite() {return gridSprite;}
+    sf::Sprite& getGridSprite();
     void drawGameBoard (sf::RenderWindow& window);
-    int getGameBoard (int x, int y) {return gameBoard[x][y];}
-    void setGameBoard(int x, int y, int value){gameBoard[x][y] = value;}
+    int getGameBoard (int x, int y) const;
+    void setGameBoard(int x, int y, int value);
     void initializeVector ();
-
-
+    int getWidth() const;
+    int getHeight() const;
 };
 
 

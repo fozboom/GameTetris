@@ -26,5 +26,26 @@ public:
 
 };
 
+class ExceptionSFML: public Exceptions
+{
+public:
+    explicit ExceptionSFML(std::string mes)
+    {
+        message = std::move(mes);
+    }
+    ExceptionSFML() = delete;
+
+};
+
+class OutOfBoundsException: public Exceptions
+{
+public:
+    explicit OutOfBoundsException(std::string mes)
+    {
+        message = std::move(mes);
+    }
+    OutOfBoundsException() = delete;
+};
+
 
 #endif //TETRIS_EXCEPTIONS_H

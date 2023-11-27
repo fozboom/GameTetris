@@ -83,10 +83,10 @@ void  Game::getAllFigures()
 
 bool Game::boundariesIsBroken()
 {
-    std::vector<Block> object = currentFigure->newCondition();
+    std::vector<Block> object = currentFigure->calculateMovedPosition( );
     for (auto & i : object)
     {
-        if (i.x< 0 || i.x > WIDTH - 1 || field.getGameBoard(i.y, i.x) != 0 || i.y > HEIGHT - 1)
+        if (i.x< 0 || i.x > field.getWidth() - 1 || field.getGameBoard(i.y, i.x) != 0 || i.y > field.getHeight()- 1)
             return true;
     }
     return false;
@@ -94,7 +94,7 @@ bool Game::boundariesIsBroken()
 
 void Game::isLocked()
 {
-    std::vector<Block> object = currentFigure->newCondition();
+    std::vector<Block> object = currentFigure->calculateMovedPosition( );
     for (Block& item: object)
     {
         field.setGameBoard(item.y, item.x, currentFigure->getColor());
@@ -111,13 +111,13 @@ void Game::drawBoardImage (sf::RenderWindow& window)
 
 void Game::drawPlacedBlocks(sf::RenderWindow& window)
 {
-    std::vector<Block> tmp = currentFigure->newCondition();
+    std::vector<Block> tmp = currentFigure->calculateMovedPosition( );
 
 
 
-    for (int i = 0; i < HEIGHT; ++i)
+    for (int i = 0; i < field.getHeight(); ++i)
     {
-        for (int j = 0; j < WIDTH; ++j)
+        for (int j = 0; j < field.getWidth(); ++j)
         {
             if (field.getGameBoard(i,j) != 0)
             {
@@ -145,9 +145,9 @@ void Game::buttonAction(int& key)
     }
     if (key == 3)
     {
-        currentFigure->rotateTetromino(false);
+        currentFigure->rotateFigure(false);
         if(boundariesIsBroken())
-            currentFigure->rotateTetromino(true);
+            currentFigure->rotateFigure(true);
     }
     if (key == 4)
     {
@@ -180,7 +180,7 @@ void Game::fallingFigure(sf::Clock& timer, float pause)
 
 bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
 {
-    std::vector<Block> object = currentFigure->newCondition();
+    std::vector<Block> object = currentFigure->calculateMovedPosition( );
     for (Block& item: object)
     {
         if (boundariesIsBroken() && (item.y == 0))
@@ -222,9 +222,9 @@ void Game::checkAndClearFilledLines()
 {
     lines_in_a_row = 0;
     bool isFull = true;
-    for (int i = HEIGHT - 1; i >= 0; --i)
+    for (int i = field.getHeight() - 1; i >= 0; --i)
     {
-        for (int j = 0; j < WIDTH; ++j)
+        for (int j = 0; j < field.getWidth(); ++j)
         {
             if (field.getGameBoard(i, j) == 0)
             {
@@ -257,12 +257,12 @@ void Game::deleteLine(int num, int count)
     {
         for (int i = num + count; i > 0; --i)
         {
-            for (int j = 0; j < WIDTH; ++j)
+            for (int j = 0; j < field.getWidth(); ++j)
             {
                 field.setGameBoard(i, j, field.getGameBoard(i - 1, j));
             }
         }
-        for (int j = 0; j < WIDTH; ++j)
+        for (int j = 0; j < field.getWidth(); ++j)
             field.setGameBoard(0, j, 0);
     }
 }
@@ -274,7 +274,7 @@ int Game::distanceToLocked()
     for (Block& item: currentFigure->getStatus())
     {
         int i = 0;
-        while ((field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0) && i < HEIGHT - 1)
+        while ((field.getGameBoard(item.y + currentFigure->get_offset_y() + i, item.x + currentFigure->get_offset_x()) == 0) && i < field.getHeight() - 1)
         {
             ++i;
         }
@@ -331,7 +331,6 @@ void Game::writeFileBestPlayers(const char* fileName)
     input.open(fileName);
     if (!input.is_open()) {throw ExceptionFile("Ошибка открытия файла для записи");}
 
-    input << infoQueue.getSize() << "\n"; // записываем размер очереди в файл
     while (!infoQueue.isEmpty()){
         PlayerInfo tempPlayerInfo = infoQueue.front();
         input << tempPlayerInfo.nickName << " " << tempPlayerInfo.score << "\n";
@@ -454,7 +453,6 @@ void Game::showGameTime(sf::RenderWindow &window)
 
 void Game::checkStatisticBeforeSave()
 {
-    std::string nickName;
     Queue<PlayerInfo> tempQueue;
     bool isScoreAdded = false;
 
@@ -580,7 +578,6 @@ bool Game::processGameCycle(sf::RenderWindow &window, GameMenu& menu)
             {
                 toDo = keyPressCheck(event, window, key, menu);
                 if (toDo == 1) return true;
-                else if (toDo == 0) return false;
             }
 
         }
@@ -668,7 +665,7 @@ void Game::saveGameToFile(std::string fileName)
     std::ofstream outFile(fileName, std::ios::binary);
 
     if (!outFile.is_open()) {
-        std::cerr << "Error: Unable to open file for writing." << std::endl;
+        std::cerr << "Ошибка открытия файла для сохранения игры" << std::endl;
         return;
     }
 
@@ -679,9 +676,9 @@ void Game::saveGameToFile(std::string fileName)
     outFile.write(reinterpret_cast<const char*>(&lines_in_a_row), sizeof(int));
 
     int cellValue;
-    for (int i = 0; i < HEIGHT; ++i)
+    for (int i = 0; i < field.getHeight(); ++i)
     {
-        for (int j = 0; j < WIDTH; ++j)
+        for (int j = 0; j < field.getWidth(); ++j)
         {
             cellValue = field.getGameBoard(i,j);
             outFile.write(reinterpret_cast<const char*>(&cellValue), sizeof(int));
@@ -697,7 +694,7 @@ void Game::loadGameFromFile(std::string fileName)
 
     if (!inFile.is_open())
     {
-        std::cerr << "Error: Unable to open file for reading." << std::endl;
+        std::cerr << "Ошибка открытия файла для чтения данных прошлой игры" << std::endl;
         return;
     }
 
@@ -708,9 +705,9 @@ void Game::loadGameFromFile(std::string fileName)
     gameTime.restart();
 
     int cellValue;
-    for (int i = 0; i < HEIGHT; ++i)
+    for (int i = 0; i < field.getHeight(); ++i)
     {
-        for (int j = 0; j < WIDTH; ++j)
+        for (int j = 0; j < field.getWidth(); ++j)
         {
             inFile.read(reinterpret_cast<char*>(&cellValue), sizeof(int));
             field.setGameBoard(i, j, cellValue);
@@ -718,6 +715,16 @@ void Game::loadGameFromFile(std::string fileName)
     }
 
     inFile.close();
+}
+
+Game::~Game()
+{
+    delete currentFigure;
+    delete nextFigure;
+    for (Figure * figure : figures) {
+        delete figure;
+    }
+    figures.clear();
 }
 
 

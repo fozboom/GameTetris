@@ -3,7 +3,7 @@
 #include "header.h"
 #include <SFML/Audio.hpp>
 
-class Button: public Text, public Picture
+class Button: public Picture
 {
 private:
     float width;
@@ -17,11 +17,11 @@ public:
     Button() = delete;
     explicit Button(std::string _someText, float w, float h, std::string fileName, float x, float y, std::string fontName, int size, float x_pos, float y_pos);
     void draw(sf::RenderWindow& window) override;
-    float getWidth(){return width;}
-    float getHeight(){return height;}
-    void playMusic(){sound.play();}
-    bool getIsPressed(){return isPressed;}
-    void setIsPressed(bool val){isPressed = val;}
+    float getWidth();
+    float getHeight();
+    void playMusic();
+    bool getIsPressed();
+    void setIsPressed(bool val);
 };
 
 

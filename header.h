@@ -4,7 +4,6 @@
 const int WIDTH = 10;
 const int HEIGHT = 20;
 const int CELL_SIZE = 30;
-const int COUNT_PEOPLE = 5;
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <random>

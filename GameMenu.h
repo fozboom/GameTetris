@@ -8,7 +8,7 @@ class Game;
 class GameMenu
 {
 private:
-    int typeOfMenu;
+    int selectedMenuOption;
     int key;
     Picture buttonStart;
     Picture buttonResume;
@@ -19,11 +19,8 @@ public:
     void showMenu(sf::RenderWindow& window, Game& game);
     void keyPressCheck(sf::Event& event);
     void buttonAction(Game& game);
-    bool getIsMenu() const {return isMenu;}
-    void setIsMenu(bool x){isMenu = x;}
+    bool getIsMenu() const;
+    void setIsMenu(bool x);
 };
-
-
-
 
 #endif //TETRIS_GAMEMENU_H

@@ -1,7 +1,16 @@
 #include "Game.h"
 #include <filesystem>
-bool startGame(GameMenu& menu);
-void gameRunning(GameMenu& menu);
+
+[[noreturn]] void gameRunning(GameMenu& menu)
+{
+    while (true)
+    {
+        Game game;
+        sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Tetris", sf::Style::Fullscreen);
+        game.processGameCycle(window, menu);
+    }
+}
+
 
 int main()
 {
@@ -10,21 +19,7 @@ int main()
 
     GameMenu menu;
     gameRunning(menu);
-
-    return 0;
 }
 
-bool startGame(GameMenu& menu)
-{
-    Game game;
-    sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Tetris", sf::Style::Fullscreen);
-    if(game.processGameCycle(window, menu)) return true;
-    return false;
-}
-
-void gameRunning(GameMenu& menu)
-{
-    if(startGame(menu)){gameRunning(menu);}
-}
 
 

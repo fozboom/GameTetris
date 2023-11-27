@@ -32,7 +32,7 @@ protected:
     int tmpTime;
     int countLines;
     std::string number;
-
+    std::string nickName;
 
     Queue<PlayerInfo> infoQueue;
 public:
@@ -65,6 +65,7 @@ public:
     bool processGameCycle (sf::RenderWindow& window, GameMenu& menu);
     void loadGameFromFile(std::string fileName);
     void saveGameToFile(std::string fileName);
+    ~Game();
 };
 
 

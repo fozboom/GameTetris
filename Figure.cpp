@@ -1,5 +1,10 @@
-
 #include "Figure.h"
+
+Block::Block(int x, int y)
+{
+    this->x = x;
+    this->y = y;
+}
 
 int generateRandomNumber(int a, int b)
 {
@@ -14,6 +19,36 @@ Figure::Figure(): shadowCube("./images/shadow_cube.png",0,0), cubeImage("./image
     rotationStatus = 0;
     color = generateRandomNumber(1, 3);
 }
+int Figure::getType() const
+{
+    return type;
+}
+int Figure::getColor() const
+{
+    return color;
+}
+
+void Figure::setDistanceToCollision(int x)
+{
+    distanceToCollision = x;
+}
+sf::Sprite& Figure::getCubeSprite()
+{
+    return cubeImage.sprite;
+}
+
+std::vector<Block>& Figure::getStatus()
+{
+    return status;
+}
+int Figure::get_offset_x() const
+{
+    return offsetX;
+}
+int Figure::get_offset_y() const
+{
+    return offsetY;
+}
 
 
 
@@ -21,7 +56,7 @@ Figure::Figure(): shadowCube("./images/shadow_cube.png",0,0), cubeImage("./image
 
 void Figure::drawFigure(sf::RenderWindow& window)
 {
-    std::vector<Block> tmp = newCondition();
+    std::vector<Block> tmp = calculateMovedPosition( );
 
     cubeImage.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
     shadowCube.sprite.setTextureRect(sf::IntRect((color-1) * cellSize,0,cellSize , cellSize) );
@@ -45,7 +80,7 @@ void Figure::move(int x, int y)
     this->offsetY += y;
 }
 
-std::vector<Block> Figure::newCondition()
+std::vector<Block> Figure::calculateMovedPosition()
 {
     std::vector<Block> tmp = status;
     std::vector<Block> movedCondition;
@@ -57,14 +92,8 @@ std::vector<Block> Figure::newCondition()
     return movedCondition;
 }
 
-void Figure::rotateTetromino(bool flag)
+Figure::~Figure()
 {
-
+    status.clear();
 }
 
-
-Block::Block(int x, int y)
-{
-    this->x = x;
-    this->y = y;
-}
