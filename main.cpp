@@ -18,7 +18,7 @@ bool startGame(GameMenu& menu)
 {
     Game game;
     sf::RenderWindow window(sf::VideoMode::getFullscreenModes()[0], "Tetris", sf::Style::Fullscreen);
-    if(game.drawWindow(window, menu)) return true;
+    if(game.processGameCycle(window, menu)) return true;
     return false;
 }
 

@@ -2,15 +2,15 @@
 
 
 Game::Game():
-        buttonRowsCount("ROWS", 150, 250, "./images/rows.png",160, 485, "./fonts/D.ttf", 48, 240, 530),
+        buttonRowsCount("./images/rows.png",160, 485),
         buttonRestart("RESTART",111,112, "./images/restart.png",1110,478,"./fonts/D.ttf",24,0,0),
         buttonPause("PAUSE", 120, 120, "./images/pause.png", 1108, 615, "./fonts/D.ttf", 24, 0,0),
-        buttonGameOver("GameOver", 1448, 916, "./images/gameOver.png", 0, 0, "./fonts/D.ttf", 24, 0,0),
+        buttonGameOver("./images/gameOver.png", 0, 0),
         buttonMusic("Music",62,34, "./images/buttonON.png", 220,684, "./fonts/D.ttf",24, 0, 0),
         oneBlock("./images/color_cubes.png", 0, 0),
         pauseBoard("./images/shadowBoard.png",0,0),
         field(),
-        lines_in_a_row(0), score(0), time(10), countLines(0), isLoadFromFile(false), fileTime(0), tmpTime(0)
+        lines_in_a_row(0), score(0), time(10), countLines(0), fileTime(0), tmpTime(0)
 {
     music.openFromFile("./music/music.ogg");
     music.setVolume(30);
@@ -28,7 +28,7 @@ Game::Game():
 
 void Game::draw(sf::RenderWindow& window)
 {
-    drawGrid(window);
+    drawPlacedBlocks(window);
     buttonRowsCount.draw(window);
     buttonPause.draw(window);
     buttonRestart.draw(window);
@@ -43,7 +43,7 @@ void Game::draw(sf::RenderWindow& window)
     showBestPlayersBlock(window);
 }
 
-Figure*& Game::getRandomFigure()
+Figure* Game::getRandomFigure()
 {
     if (figures.empty())
     {
@@ -109,7 +109,7 @@ void Game::drawBoardImage (sf::RenderWindow& window)
     field.drawGameBoard(window);
 }
 
-void Game::drawGrid(sf::RenderWindow& window)
+void Game::drawPlacedBlocks(sf::RenderWindow& window)
 {
     std::vector<Block> tmp = currentFigure->newCondition();
 
@@ -173,7 +173,7 @@ void Game::fallingFigure(sf::Clock& timer, float pause)
         {
             currentFigure->move(0, -1);
             isLocked();
-            lineFilled();
+            checkAndClearFilledLines( );
         }
     }
 }
@@ -218,7 +218,7 @@ bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
     return false;
 }
 
-void Game::lineFilled()
+void Game::checkAndClearFilledLines()
 {
     lines_in_a_row = 0;
     bool isFull = true;
@@ -248,6 +248,8 @@ void Game::lineFilled()
         isFull = true;
     }
 }
+
+
 
 void Game::deleteLine(int num, int count)
 {
@@ -304,45 +306,59 @@ void Game::drawNextFigureBlock(sf::RenderWindow &window)
 
 void Game::readFileBestPlayers(const char* fileName)
 {
-    std::ifstream read;
-    read.open(fileName);
+    int size = 0;
+    std::ifstream read(fileName);
     if (!read.is_open()) {throw ExceptionFile("Ошибка открытия файла для чтения");}
 
-    for (auto & i : infoBlock)
+    PlayerInfo tempPlayerInfo;
+    while (read >> tempPlayerInfo.nickName >> tempPlayerInfo.score)
     {
-        if (!(read >> i.nickName >> i.score))
-        {
-            throw ExceptionFile("Ошибка чтения данных из файла");
-        }
+        infoQueue.enqueue(tempPlayerInfo);
+        size++;
+    }
+
+    if(!read.eof())
+    {
+        throw ExceptionFile("Ошибка чтения данных из файла");
     }
 }
 
 void Game::writeFileBestPlayers(const char* fileName)
 {
     checkStatisticBeforeSave();
+
     std::ofstream input;
     input.open(fileName);
     if (!input.is_open()) {throw ExceptionFile("Ошибка открытия файла для записи");}
 
-    for (int i = 0; i < COUNT_PEOPLE; ++i)
-    {
-        input << infoBlock[i].nickName << " " << infoBlock[i].score << "\n";
+    input << infoQueue.getSize() << "\n"; // записываем размер очереди в файл
+    while (!infoQueue.isEmpty()){
+        PlayerInfo tempPlayerInfo = infoQueue.front();
+        input << tempPlayerInfo.nickName << " " << tempPlayerInfo.score << "\n";
+        infoQueue.dequeue();
     }
 }
 
 void Game::showBestPlayersBlock(sf::RenderWindow& window)
 {
     int offset_x = 90, offset_y = 0;
-    for (int i = 0; i < COUNT_PEOPLE; ++i)
+    Queue<PlayerInfo> tempQueue = infoQueue;
+
+    for (int i = 0; i < 5; ++i)
     {
-        text.setString(infoBlock[i].nickName);
-        text.setPosition(static_cast<float>(175), static_cast<float>(195 + offset_y));
+        PlayerInfo tempPlayerInfo = tempQueue.front();
+        text.setString(tempPlayerInfo.nickName);
+        text.setPosition(static_cast<float>(165), static_cast<float>(195 + offset_y));
         window.draw(text);
-        number = std::to_string(infoBlock[i].score);
+        number = std::to_string(tempPlayerInfo.score);
         text.setString(number);
-        text.setPosition(static_cast<float>(185 + offset_x), static_cast<float>(195 + offset_y));
+        text.setPosition(static_cast<float>(175 + offset_x), static_cast<float>(195 + offset_y));
         window.draw(text);
+        tempQueue.dequeue();
         offset_y += 30;
+    }
+    while (!tempQueue.isEmpty()) {
+        tempQueue.dequeue();
     }
 
 }
@@ -438,20 +454,39 @@ void Game::showGameTime(sf::RenderWindow &window)
 
 void Game::checkStatisticBeforeSave()
 {
-    for (int i = 0; i < COUNT_PEOPLE; ++i)
+    std::string nickName;
+    Queue<PlayerInfo> tempQueue;
+    bool isScoreAdded = false;
+
+    // размер будет читаться из файла, поэтому подразумеваем, что он установлен заранее
+    int queueSize = infoQueue.getSize();
+
+    for(int i = 0; i < queueSize; ++i)
     {
-        if (score > infoBlock[i].score)
+        PlayerInfo current = infoQueue.front();
+        infoQueue.dequeue();
+
+        if (!isScoreAdded && score > current.score)
         {
-            for (int k = COUNT_PEOPLE-1; k > i; --k)
-            {
-                infoBlock[k].score = infoBlock[k-1].score;
-                infoBlock[k].nickName = infoBlock[k-1].nickName;
-            }
-            infoBlock[i].score = this->score;
-            infoBlock[i].nickName = this->nickName;
-            break;
+            PlayerInfo newScore{nickName, score};
+            tempQueue.enqueue(newScore);
+            isScoreAdded = true;
         }
 
+        tempQueue.enqueue(current);
+    }
+
+    if (!isScoreAdded) // если новый счет еще не добавлен
+    {
+        PlayerInfo newScore{nickName, score};
+        tempQueue.enqueue(newScore);
+    }
+
+    // очистить infoQueue и перенести все элементы обратно
+    while(!tempQueue.isEmpty())
+    {
+        infoQueue.enqueue(tempQueue.front());
+        tempQueue.dequeue();
     }
 }
 
@@ -528,7 +563,7 @@ int Game::keyPressCheck(sf::Event& event, sf::RenderWindow& window, int & key, G
 }
 
 
-bool Game::drawWindow(sf::RenderWindow &window, GameMenu& menu)
+bool Game::processGameCycle(sf::RenderWindow &window, GameMenu& menu)
 {
     sf::Clock timer;
     float pause = 0.27f;
@@ -641,6 +676,7 @@ void Game::saveGameToFile(std::string fileName)
     outFile.write(reinterpret_cast<const char*>(&score), sizeof(int));
     outFile.write(reinterpret_cast<const char*>(&time), sizeof(int));
     outFile.write(reinterpret_cast<const char*>(&countLines), sizeof(int));
+    outFile.write(reinterpret_cast<const char*>(&lines_in_a_row), sizeof(int));
 
     int cellValue;
     for (int i = 0; i < HEIGHT; ++i)
@@ -668,6 +704,7 @@ void Game::loadGameFromFile(std::string fileName)
     inFile.read(reinterpret_cast<char*>(&score), sizeof(int));
     inFile.read(reinterpret_cast<char*>(&fileTime), sizeof(int));
     inFile.read(reinterpret_cast<char*>(&countLines), sizeof(int));
+    inFile.read(reinterpret_cast<char*>(&lines_in_a_row), sizeof(int));
     gameTime.restart();
 
     int cellValue;

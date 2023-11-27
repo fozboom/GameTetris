@@ -1,16 +1,17 @@
-#ifndef TETRIS_SPRITE_H
-#define TETRIS_SPRITE_H
+#ifndef TETRIS_PICTURE_H
+#define TETRIS_PICTURE_H
+#include "Text.h"
 #include "SFML/Graphics.hpp"
 
-struct my_Sprite
+struct Picture: public Text
 {
     sf::Image image;
     sf::Texture texture;
     sf::Sprite sprite;
     float x_coordinate;
     float y_coordinate;
-    my_Sprite() = delete;
-    explicit my_Sprite(std::string fileName, float x, float y) : x_coordinate(x), y_coordinate(y)
+    Picture() = delete;
+    explicit Picture(std::string fileName, float x, float y) : x_coordinate(x), y_coordinate(y),Text("./fonts/D.ttf")
     {
         image.loadFromFile(fileName);
         texture.loadFromImage(image);
@@ -22,6 +23,12 @@ struct my_Sprite
         x_coordinate = x;
         y_coordinate = y;
         sprite.setPosition(x, y);
+    }
+
+    virtual void draw(sf::RenderWindow& window)
+    {
+        setPosition(x_coordinate, y_coordinate);
+        window.draw(sprite);
     }
 
     float getPositionX () const {return x_coordinate;}
@@ -50,7 +57,8 @@ public:
         this->nickName = std::move(obj.nickName);
         return *this;
     }
+    PlayerInfo(std::string name = "", int _score = 0): nickName(std::move(name)), score(_score) {};
 };
 
 
-#endif //TETRIS_SPRITE_H
+#endif //TETRIS_PICTURE_H

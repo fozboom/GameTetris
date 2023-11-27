@@ -58,7 +58,6 @@ void GameMenu::buttonAction(Game& game)
         else if (typeOfMenu == 1)
         {
             game.loadGameFromFile("Game");
-            game.setIsLoadFromFile(true);
             isMenu = false;
         }
         else

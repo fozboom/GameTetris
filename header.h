@@ -11,10 +11,10 @@ const int COUNT_PEOPLE = 5;
 #include <fstream>
 #include <map>
 
-
+#include "MyQueue.h"
 #include <thread>
 
-#include "Sprite.h"
+#include "Picture.h"
 #include "Text.h"
 #include "Button.h"
 #include "GameMenu.h"

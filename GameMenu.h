@@ -10,9 +10,9 @@ class GameMenu
 private:
     int typeOfMenu;
     int key;
-    my_Sprite buttonStart;
-    my_Sprite buttonResume;
-    my_Sprite buttonExit;
+    Picture buttonStart;
+    Picture buttonResume;
+    Picture buttonExit;
     bool isMenu;
 public:
     GameMenu();
@@ -21,8 +21,6 @@ public:
     void buttonAction(Game& game);
     bool getIsMenu() const {return isMenu;}
     void setIsMenu(bool x){isMenu = x;}
-    void saveGameToFile(std::string fileName, Game& game);
-    void loadGameFromFile (std::string fileName,Game& game);
 };
 
 

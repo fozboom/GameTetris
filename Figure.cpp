@@ -9,7 +9,7 @@ int generateRandomNumber(int a, int b)
     return distribution(gen);
 }
 
-Figure::Figure(): shadowCube("./images/shadow_cube.png",0,0), cubeImage("./images/color_cubes.png", 0,0), type(0), cellSize(30), offsetX(6), offsetY(0), distanceToCollision(0)
+Figure::Figure(): shadowCube("./images/shadow_cube.png",0,0), cubeImage("./images/color_cubes.png", 0,0), type(0), cellSize(30), offsetX(4), offsetY(0), distanceToCollision(0)
 {
     rotationStatus = 0;
     color = generateRandomNumber(1, 3);

@@ -13,15 +13,16 @@ add_executable(Tetris main.cpp
         Figure.h
         Figure.cpp
         header.h
-        Level.cpp
-        Level.h
         Button.cpp
         Button.h
-        Sprite.h
+        Picture.h
         Button.cpp
         Button.h
         Exceptions.h
         GameMenu.cpp
-        GameMenu.h Text.h)
+        GameMenu.h
+        Text.h
+        MyQueue.h
+)
 
 target_link_libraries(Tetris sfml-graphics sfml-audio)

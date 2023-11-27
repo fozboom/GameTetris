@@ -3,7 +3,7 @@
 #include "header.h"
 #include <SFML/Audio.hpp>
 
-class Button: public Text, public my_Sprite
+class Button: public Text, public Picture
 {
 private:
     float width;

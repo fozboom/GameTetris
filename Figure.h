@@ -25,8 +25,8 @@ protected:
     int offsetY;
     int heightOfBlock;
     int distanceToCollision;
-    my_Sprite cubeImage;
-    my_Sprite shadowCube;
+    Picture cubeImage;
+    Picture shadowCube;
     int type;
 public:
     Figure();

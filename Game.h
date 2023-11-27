@@ -9,40 +9,41 @@ protected:
 
     Figure* currentFigure;
     Figure* nextFigure;
+    std::vector<Figure*> figures;
 
     Button buttonPause;
     Button buttonRestart;
     Button buttonMusic;
-    Button buttonGameOver;
-    Button buttonRowsCount;
 
-    std::vector<Figure*> figures;
-    my_Sprite oneBlock;
-    my_Sprite pauseBoard;
+    Picture buttonGameOver;
+    Picture buttonRowsCount;
+    Picture oneBlock;
+    Picture pauseBoard;
+
     sf::Font font;
     sf::Text text;
+    sf::Clock gameTime;
+    sf::Music music;
+
     int lines_in_a_row;
     int score;
     int time;
     int fileTime;
     int tmpTime;
     int countLines;
-    sf::Clock gameTime;
     std::string number;
-    std::string nickName;
 
-    sf::Music music;
-    bool isLoadFromFile;
 
+    Queue<PlayerInfo> infoQueue;
 public:
-    PlayerInfo infoBlock[COUNT_PEOPLE];
+
 public:
     Game();
     int keyPressCheck(sf::Event& event, sf::RenderWindow& window, int& key, GameMenu& menu);
     int mousePressedCheck(sf::Event& event, sf::RenderWindow& window);
     void buttonAction (int& key);
     void fallingFigure (sf::Clock& timer, float pause);
-    Figure*& getRandomFigure();
+    Figure* getRandomFigure();
     void getAllFigures();
     void drawBoardImage (sf::RenderWindow& window);
     void draw(sf::RenderWindow& window);
@@ -50,9 +51,9 @@ public:
     bool boundariesIsBroken ();
     void isLocked();
     int distanceToLocked ();
-    void drawGrid(sf::RenderWindow& window);
+    void drawPlacedBlocks(sf::RenderWindow& window);
     bool gameOver(sf::RenderWindow& window, sf::Event& event);
-    void lineFilled ();
+    void checkAndClearFilledLines ();
     void deleteLine (int num, int count);
     void readFileBestPlayers(const char* fileName);
     void writeFileBestPlayers(const char* fileName);
@@ -61,16 +62,10 @@ public:
     void showGameTime(sf::RenderWindow& window);
     void showScore (sf::RenderWindow& window);
     void checkStatisticBeforeSave();
-    bool drawWindow (sf::RenderWindow& window, GameMenu& menu);
-    int getFieldGameBoard(int i, int j){return field.getGameBoard(i, j);}
-    void setFieldGameBoard(int i, int j, int val){return field.setGameBoard(i, j, val);}
-    int getScore()const {return score;}
-    int getTime() const {return time;}
-    void setScore (int _score){this->score = _score;}
-    void setTime (int _time){ this->time = _time;}
+    bool processGameCycle (sf::RenderWindow& window, GameMenu& menu);
+
     void loadGameFromFile(std::string fileName);
     void saveGameToFile(std::string fileName);
-    void setIsLoadFromFile(bool val){isLoadFromFile = val;}
 };
 
 

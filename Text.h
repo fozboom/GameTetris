@@ -45,6 +45,15 @@ public:
         else
             text.setString("");
     }
+    Text (std::string fontName)
+    {
+        font.loadFromFile(fontName);
+        text.setFont(font);
+        text.setCharacterSize(48);
+        text.setFillColor(sf::Color::White);
+        x_pos = 240;
+        y_pos = 530;
+    }
 
     void inputLogic (int charTyped)
     {
@@ -97,6 +106,7 @@ public:
         {
             x_pos = 220;
         }
+
         text.setPosition(x_pos, y_pos);
         window.draw(text);
     }
