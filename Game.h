@@ -63,7 +63,6 @@ public:
     void showScore (sf::RenderWindow& window);
     void checkStatisticBeforeSave();
     bool processGameCycle (sf::RenderWindow& window, GameMenu& menu);
-
     void loadGameFromFile(std::string fileName);
     void saveGameToFile(std::string fileName);
 };
