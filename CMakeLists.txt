@@ -20,12 +20,13 @@ add_executable(Tetris main.cpp
         Exceptions.h
         GameMenu.cpp
         GameMenu.h
-        MyQueue.h
         Text.cpp
         Text.h
         PlayerInfo.h
         Picture.cpp
         Picture.h
+        PlayerInfo.cpp
+        Queue.h
 )
 
 target_link_libraries(Tetris sfml-graphics sfml-audio)

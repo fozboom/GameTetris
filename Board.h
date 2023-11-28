@@ -21,6 +21,7 @@ public:
     void initializeVector ();
     int getWidth() const;
     int getHeight() const;
+    ~Board();
 };
 
 

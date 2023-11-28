@@ -3,17 +3,16 @@
 
 GameMenu::GameMenu():
         mainMenu("images/mainMenu.png", 0, 0),
+        buttonStart("Start", 286,127,"images/buttonStart.png", 579,233),
+        buttonResume("Resume", 286,127,"images/buttonResume.png", 579,395),
+        buttonExit("Exit", 286, 127, "images/buttonExit.png",579, 554),
         selectedMenuOption(0), key(0), isMenu(true)
 {
-    buttonStart = new Button("Start", 286,127,"images/buttonStart.png", 579,233);
-    buttonResume = new Button("Resume", 286,127,"images/buttonResume.png", 579,395);
-    buttonExit = new Button("Exit", 286, 127, "images/buttonExit.png",579, 554);
+
 }
 
 GameMenu::~GameMenu() {
-    delete buttonStart;
-    delete buttonResume;
-    delete buttonExit;
+
 }
 
 void GameMenu::keyPressCheck(sf::Event& event)
@@ -40,27 +39,27 @@ void GameMenu::keyPressCheck(sf::Event& event)
 void GameMenu::showMenu(sf::RenderWindow& window, Game& game)
 {
     window.draw(mainMenu.sprite);
-    window.draw(buttonStart->sprite);
-    window.draw(buttonResume->sprite);
-    window.draw(buttonExit->sprite);
+    window.draw(buttonStart.sprite);
+    window.draw(buttonResume.sprite);
+    window.draw(buttonExit.sprite);
     buttonAction(game);
     if (selectedMenuOption == 0)
     {
-        buttonStart->updateSprite("images/selectedStart.png");
-        buttonResume->updateSprite("images/buttonResume.png");
-        buttonExit->updateSprite("images/buttonExit.png");
+        buttonStart.updateSprite("images/selectedStart.png");
+        buttonResume.updateSprite("images/buttonResume.png");
+        buttonExit.updateSprite("images/buttonExit.png");
     }
     else if (selectedMenuOption == 1)
     {
-        buttonStart->updateSprite("images/buttonStart.png");
-        buttonResume->updateSprite("images/selectedResume.png");
-        buttonExit->updateSprite("images/buttonExit.png");
+        buttonStart.updateSprite("images/buttonStart.png");
+        buttonResume.updateSprite("images/selectedResume.png");
+        buttonExit.updateSprite("images/buttonExit.png");
     }
     else
     {
-        buttonStart->updateSprite("images/buttonStart.png");
-        buttonResume->updateSprite("images/buttonResume.png");
-        buttonExit->updateSprite("images/selectedExit.png");
+        buttonStart.updateSprite("images/buttonStart.png");
+        buttonResume.updateSprite("images/buttonResume.png");
+        buttonExit.updateSprite("images/selectedExit.png");
     }
 
 }
@@ -72,18 +71,18 @@ void GameMenu::buttonAction(Game& game)
         selectedMenuOption--;
         if (selectedMenuOption < 0)
             selectedMenuOption = 2;
-        buttonResume->playMusic();
+        buttonResume.playMusic();
     }
     if (key == 2)
     {
         selectedMenuOption++;
         if (selectedMenuOption > 2)
             selectedMenuOption = 0;
-        buttonResume->playMusic();
+        buttonResume.playMusic();
     }
     if (key == 3)
     {
-        buttonResume->playMusic();
+        buttonResume.playMusic();
         if (selectedMenuOption == 0)
             isMenu = false;
         else if (selectedMenuOption == 1)

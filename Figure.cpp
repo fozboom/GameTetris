@@ -93,3 +93,8 @@ Figure::~Figure()
     status.clear();
 }
 
+Block::~Block()
+{
+
+}
+

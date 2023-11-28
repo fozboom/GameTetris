@@ -51,6 +51,11 @@ void Board::drawGameBoard(sf::RenderWindow &window)
     window.draw(gridSprite);
 }
 
+Board::~Board()
+{
+
+}
+
 
 
 

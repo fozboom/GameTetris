@@ -11,7 +11,7 @@ public:
     int x;
     int y;
     Block(int x, int y);
-
+    ~Block();
 };
 
 class Figure

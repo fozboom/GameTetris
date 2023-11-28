@@ -32,6 +32,10 @@ void Button::setIsPressed(bool val)
     isPressed = val;
 }
 
+Button::~Button()
+{
+
+}
 
 
 

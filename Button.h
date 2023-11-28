@@ -22,6 +22,7 @@ public:
     void playMusic();
     bool getIsPressed();
     void setIsPressed(bool val);
+    ~Button();
 };
 
 

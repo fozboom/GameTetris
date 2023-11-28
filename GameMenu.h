@@ -3,8 +3,7 @@
 
 #include "Picture.h"
 #include "header.h"
-
-class Button;
+#include "Button.h"
 class Game;
 
 class GameMenu
@@ -12,9 +11,9 @@ class GameMenu
 private:
     int selectedMenuOption;
     int key;
-    Button *buttonStart;
-    Button *buttonResume;
-    Button *buttonExit;
+    Button buttonStart;
+    Button buttonResume;
+    Button buttonExit;
     Picture mainMenu;
     bool isMenu;
 public:

@@ -220,8 +220,8 @@ bool Game::gameOver(sf::RenderWindow& window, sf::Event& event)
 
 void Game::checkAndClearFilledLines()
 {
-    lines_in_a_row = 0;
     bool isFull = true;
+    lines_in_a_row = 0;
     for (int i = field.getHeight() - 1; i >= 0; --i)
     {
         for (int j = 0; j < field.getWidth(); ++j)
@@ -239,11 +239,9 @@ void Game::checkAndClearFilledLines()
         if (!isFull && lines_in_a_row>0)
         {
             countLines += lines_in_a_row;
-            std::cout << lines_in_a_row << std::endl;
             deleteLine(i, lines_in_a_row);
             i+= lines_in_a_row;
             scoreBooster(lines_in_a_row);
-            std::cout << lines_in_a_row << std::endl;
         }
         isFull = true;
     }
@@ -262,8 +260,6 @@ void Game::deleteLine(int num, int count)
                 field.setGameBoard(i, j, field.getGameBoard(i - 1, j));
             }
         }
-        for (int j = 0; j < field.getWidth(); ++j)
-            field.setGameBoard(0, j, 0);
     }
 }
 
@@ -306,15 +302,15 @@ void Game::drawNextFigureBlock(sf::RenderWindow &window)
 
 void Game::readFileBestPlayers(const char* fileName)
 {
-    int size = 0;
     std::ifstream read(fileName);
     if (!read.is_open()) {throw ExceptionFile("Ошибка открытия файла для чтения");}
 
-    PlayerInfo tempPlayerInfo;
-    while (read >> tempPlayerInfo.nickName >> tempPlayerInfo.score)
+    std::string tempName;
+    int tempScore;
+    while (read >> tempName >> tempScore)
     {
+        PlayerInfo tempPlayerInfo(tempName, tempScore);
         infoQueue.enqueue(tempPlayerInfo);
-        size++;
     }
 
     if(!read.eof())
@@ -333,7 +329,7 @@ void Game::writeFileBestPlayers(const char* fileName)
 
     while (!infoQueue.isEmpty()){
         PlayerInfo tempPlayerInfo = infoQueue.front();
-        input << tempPlayerInfo.nickName << " " << tempPlayerInfo.score << "\n";
+        input << tempPlayerInfo.getNickName() << " " << tempPlayerInfo.getScore() << "\n";
         infoQueue.dequeue();
     }
 }
@@ -346,10 +342,10 @@ void Game::showBestPlayersBlock(sf::RenderWindow& window)
     for (int i = 0; i < 5; ++i)
     {
         PlayerInfo tempPlayerInfo = tempQueue.front();
-        text.setString(tempPlayerInfo.nickName);
+        text.setString(tempPlayerInfo.getNickName());
         text.setPosition(static_cast<float>(165), static_cast<float>(195 + offset_y));
         window.draw(text);
-        number = std::to_string(tempPlayerInfo.score);
+        number = std::to_string(tempPlayerInfo.getScore());
         text.setString(number);
         text.setPosition(static_cast<float>(175 + offset_x), static_cast<float>(195 + offset_y));
         window.draw(text);
@@ -456,15 +452,13 @@ void Game::checkStatisticBeforeSave()
     Queue<PlayerInfo> tempQueue;
     bool isScoreAdded = false;
 
-    // размер будет читаться из файла, поэтому подразумеваем, что он установлен заранее
-    int queueSize = infoQueue.getSize();
 
-    for(int i = 0; i < queueSize; ++i)
+    while(!infoQueue.isEmpty())
     {
         PlayerInfo current = infoQueue.front();
         infoQueue.dequeue();
 
-        if (!isScoreAdded && score > current.score)
+        if (!isScoreAdded && score > current.getScore())
         {
             PlayerInfo newScore{nickName, score};
             tempQueue.enqueue(newScore);

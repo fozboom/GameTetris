@@ -39,6 +39,7 @@ public:
     void setSelected(bool sel);
     std::string getString();
     void typeOn (sf::Event& event, sf::RenderWindow& window);
+
 };
 
 #endif //TETRIS_TEXT_H

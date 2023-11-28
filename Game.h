@@ -5,7 +5,7 @@
 #include "Figure.h"
 #include "Button.h"
 #include "Picture.h"
-#include "MyQueue.h"
+#include "Queue.h"
 #include "GameMenu.h"
 class Game
 {

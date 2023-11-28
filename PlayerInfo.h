@@ -2,18 +2,19 @@
 #define TETRIS_PLAYERINFO_H
 #include <iostream>
 
-struct PlayerInfo
+class PlayerInfo
 {
+private:
     std::string nickName;
     int score;
-
 public:
-    PlayerInfo& operator = (const PlayerInfo& obj)
-    {
-        this->score = obj.score;
-        this->nickName = std::move(obj.nickName);
-        return *this;
-    }
-    PlayerInfo(std::string name = "", int _score = 0): nickName(std::move(name)), score(_score) {};
+    PlayerInfo(const std::string& name = "", int _score = 0);
+    PlayerInfo& operator=(const PlayerInfo& obj);
+
+    std::string getNickName() const;
+    int getScore() const;
+    void setNickName(const std::string& name);
+    void setScore(int _score);
 };
+
 #endif //TETRIS_PLAYERINFO_H

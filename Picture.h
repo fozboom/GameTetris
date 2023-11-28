@@ -5,7 +5,6 @@
 #include "Text.h"
 #include "PlayerInfo.h"
 
-class Text;
 
 struct Picture: public Text
 {
@@ -18,8 +17,8 @@ struct Picture: public Text
     Picture() = delete;
     explicit Picture(std::string fileName, float x, float y);
 
-    virtual void setPosition (float x, float y);
-    virtual void draw(sf::RenderWindow& window);
+    virtual void setPosition (float x, float y) override;
+    virtual void draw(sf::RenderWindow& window) override;
     float getPositionX () const;
     float getPositionY () const;
     void updateSprite(std::string fileName);
