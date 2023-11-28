@@ -3,10 +3,10 @@
 
 Game::Game():
         buttonRowsCount("./images/rows.png",160, 485),
-        buttonRestart("RESTART",111,112, "./images/restart.png",1110,478,"./fonts/D.ttf",24,0,0),
-        buttonPause("PAUSE", 120, 120, "./images/pause.png", 1108, 615, "./fonts/D.ttf", 24, 0,0),
+        buttonRestart("RESTART",111,112, "./images/restart.png",1110,478),
+        buttonPause("PAUSE", 120, 120, "./images/pause.png", 1108, 615),
         buttonGameOver("./images/gameOver.png", 0, 0),
-        buttonMusic("Music",62,34, "./images/buttonON.png", 220,684, "./fonts/D.ttf",24, 0, 0),
+        buttonMusic("Music",62,34, "./images/buttonON.png", 220,684),
         oneBlock("./images/color_cubes.png", 0, 0),
         pauseBoard("./images/shadowBoard.png",0,0),
         field(),

@@ -1,7 +1,6 @@
-
 #ifndef TETRIS_BOARD_H
 #define TETRIS_BOARD_H
-#pragma once
+
 #include "header.h"
 
 class Board

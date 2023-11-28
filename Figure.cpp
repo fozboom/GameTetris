@@ -32,10 +32,6 @@ void Figure::setDistanceToCollision(int x)
 {
     distanceToCollision = x;
 }
-sf::Sprite& Figure::getCubeSprite()
-{
-    return cubeImage.sprite;
-}
 
 std::vector<Block>& Figure::getStatus()
 {

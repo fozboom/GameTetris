@@ -1,8 +1,10 @@
 #ifndef TETRIS_GAMEMENU_H
 #define TETRIS_GAMEMENU_H
+
+#include "Picture.h"
 #include "header.h"
 
-
+class Button;
 class Game;
 
 class GameMenu
@@ -10,9 +12,10 @@ class GameMenu
 private:
     int selectedMenuOption;
     int key;
-    Picture buttonStart;
-    Picture buttonResume;
-    Picture buttonExit;
+    Button *buttonStart;
+    Button *buttonResume;
+    Button *buttonExit;
+    Picture mainMenu;
     bool isMenu;
 public:
     GameMenu();
@@ -21,6 +24,7 @@ public:
     void buttonAction(Game& game);
     bool getIsMenu() const;
     void setIsMenu(bool x);
+    ~GameMenu();
 };
 
 #endif //TETRIS_GAMEMENU_H

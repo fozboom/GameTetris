@@ -1,10 +1,11 @@
 #include "Button.h"
 
-Button::Button(std::string _someText, float w, float h, std::string fileName, float x, float y, std::string fontName, int size, float x_pos, float y_pos) :
+Button::Button(std::string _someText, float w, float h, std::string fileName, float x, float y) :
         Picture(fileName, x , y), width(w), height(h), isPressed(false)
 {
     buffer.loadFromFile("music/click.ogg");
     sound.setBuffer(buffer);
+    sprite.setPosition(x,y);
 }
 
 void Button::draw(sf::RenderWindow &window)

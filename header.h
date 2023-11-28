@@ -9,17 +9,8 @@ const int CELL_SIZE = 30;
 #include <random>
 #include <fstream>
 #include <map>
-
-#include "MyQueue.h"
 #include <thread>
 
-#include "Picture.h"
-#include "Text.h"
-#include "Button.h"
-#include "GameMenu.h"
-#include "Board.h"
-#include "Figure.h"
-#include "Exceptions.h"
 
 
 

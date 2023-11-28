@@ -1,8 +1,8 @@
 #ifndef TETRIS_FIGURE_H
 #define TETRIS_FIGURE_H
-#pragma once
-#include "header.h"
 
+#include "Picture.h"
+#include "header.h"
 int generateRandomNumber(int a, int b);
 
 class Block
@@ -33,7 +33,6 @@ public:
     int getType() const;
     int getColor() const;
     void setDistanceToCollision(int x);
-    sf::Sprite& getCubeSprite();
     void drawFigure(sf::RenderWindow& window);
     void move(int xPos, int yPos);
     std::vector<Block> calculateMovedPosition ();

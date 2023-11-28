@@ -1,8 +1,8 @@
 #ifndef TETRIS_BUTTON_H
 #define TETRIS_BUTTON_H
+#include "Picture.h"
 #include "header.h"
 #include <SFML/Audio.hpp>
-
 class Button: public Picture
 {
 private:
@@ -15,7 +15,7 @@ private:
 
 public:
     Button() = delete;
-    explicit Button(std::string _someText, float w, float h, std::string fileName, float x, float y, std::string fontName, int size, float x_pos, float y_pos);
+    explicit Button(std::string _someText, float w, float h, std::string fileName, float x, float y);
     void draw(sf::RenderWindow& window) override;
     float getWidth();
     float getHeight();

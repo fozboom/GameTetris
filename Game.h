@@ -1,7 +1,12 @@
 #ifndef TETRIS_GAME_H
 #define TETRIS_GAME_H
 #include "header.h"
-
+#include "Board.h"
+#include "Figure.h"
+#include "Button.h"
+#include "Picture.h"
+#include "MyQueue.h"
+#include "GameMenu.h"
 class Game
 {
 protected:
