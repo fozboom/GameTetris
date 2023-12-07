@@ -3,23 +3,27 @@
 #include <iostream>
 #include "Exceptions.h"
 
+// Определяем шаблонный класс Queue (очередь)
 template<typename T>
 class Queue {
 private:
+    // Внутренний класс Node (узел), представляет собой элемент очереди
     struct Node
     {
-        T data;
-        Node *next;
-        explicit Node(T data = 0, Node *next = nullptr) : data(data), next(next) {}
+        T data;         // Данные узла
+        Node *next;     // Указатель на следующий узел в очереди
+        explicit Node(T data = 0, Node *next = nullptr) : data(data), next(next) {}  // Конструктор узла
     };
-    Node *head;
-    Node *tail;
-    int size;
+
+    Node *head;   // Указатель на голову (начало) очереди
+    Node *tail;   // Указатель на хвост (конец) очереди
+    int size;     // Размер очереди
+
 public:
-    // Конструктор
+    // Конструктор очереди
     Queue() : head(nullptr), tail(nullptr), size(0) {}
 
-    // Деструктор
+    // Деструктор очереди, освобождает память занятую узлами
     ~Queue()
     {
         while (head) {
@@ -29,7 +33,7 @@ public:
         }
     }
 
-    // Добавление элемента в хвост
+    // Метод добавления элемента в конец очереди
     void enqueue(T data)
     {
         Node *node = new Node(data, nullptr);
@@ -45,7 +49,7 @@ public:
         size++;
     }
 
-    // Удаление элемента из головы
+    // Метод удаления элемента из начала очереди
     void dequeue()
     {
         if (isEmpty())
@@ -61,26 +65,26 @@ public:
         }
     }
 
-    // Получение элемента из начала очереди без удаления
+    // Метод для получения элемента из начала очереди без его удаления
     T front() const
     {
         if (head) return head->data;
         throw  OutOfBoundsException("Очередь пуста");
     }
 
-    // Проверка очереди на пустоту
+    // Метод проверки очереди на пустоту
     bool isEmpty() const
     {
         return head == nullptr;
     }
 
-    // Получение размера очереди
+    // Метод возвращает размер очереди
     int getSize() const
     {
         return size;
     }
 
-    // Печать элементов очереди, начиная с головы
+    // Метод печатает элементы очереди, начиная с головы
     void printQueue()
     {
         Node* current = head;
@@ -92,7 +96,7 @@ public:
         std::cout << std::endl;
     }
 
-    // Копирование очереди
+    // Конструктор копирования
     Queue(const Queue<T>& other) : head(nullptr), tail(nullptr), size(0)
     {
         Node *cur = other.head;
@@ -112,7 +116,7 @@ public:
         return *this;
     }
 
-    // Перегрузка оператора равенства
+    // Перегрузка оператора сравнения на равенство
     bool operator==(const Queue<T>& other) const
     {
         if (size != other.size)

@@ -3,30 +3,43 @@
 
 #include "Picture.h"
 #include "header.h"
+
+// Функция для генерации случайного числа в определенном диапазоне
 int generateRandomNumber(int a, int b);
 
+// Класс Block, представляет собой отдельный блок тетриса
 class Block
 {
 public:
-    int x;
-    int y;
-    Block(int x, int y);
-    ~Block();
+    int x; // x-координата блока
+    int y; // y-координата блока
+
+    Block(int x, int y);// Конструктор с параметрами координат
+    ~Block(); // Деструктор класса
 };
 
+// Базовый класс Figure, представляет одну фигурку в тетрисе
 class Figure
 {
 protected:
+    // Вектор блоков, из которых состоит фигурка
+    // Общая картина зависит от положения и формы этих блоков
     std::vector <Block> status;
+    // Номер текущего положения фигурки (поворот)
     int rotationStatus;
+    // Цвет фигурки
     int color;
+    // Установленные размеры ячейки, смещения по оси x и y,
+    // высота блока и расстояние до столкновения
     int cellSize;
     int offsetX;
     int offsetY;
     int heightOfBlock;
     int distanceToCollision;
+    // Образы фигурки и тени
     Picture cubeImage;
     Picture shadowCube;
+    // Определяет тип фигуры (для специфических поведений)
     int type;
 public:
     Figure();
@@ -42,6 +55,10 @@ public:
     virtual void rotateFigure (bool flag) = 0;
     virtual ~Figure();
 };
+
+// Остальной код является определениями различных конкретных фигур,
+// включая J_Block, Z_Block, T_Block, S_Block, L_Block, I_Block и O_Block.
+// Каждый из этих классов предоставляет свои варианты поворота и формы.
 
 class J_Block: public Figure
 {
