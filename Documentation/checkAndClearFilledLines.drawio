@@ -1,4 +1,4 @@
-<mxfile host="Electron" modified="2023-12-07T19:19:47.235Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="lvDqSjhmYDL0pYKsHJPZ" version="21.3.7" type="device">
+<mxfile host="Electron" modified="2023-12-08T05:13:22.848Z" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/21.3.7 Chrome/112.0.5615.204 Electron/24.5.0 Safari/537.36" etag="x_vYAWcwuxJ6J9WNQE21" version="21.3.7" type="device">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="2391" dy="-495" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -184,11 +184,6 @@
             </mxGeometry>
           </mxCell>
         </UserObject>
-        <mxCell id="uB6nW4yx-0IFaM0tfQI4-0" value="Text" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontFamily=Helvetica;" parent="qWZ-l2z-JB1AM-Fq5q6x-17" vertex="1" connectable="0">
-          <mxGeometry x="-0.2881" y="-6" relative="1" as="geometry">
-            <mxPoint x="1" as="offset" />
-          </mxGeometry>
-        </mxCell>
         <UserObject label="" tags="Фон" id="qWZ-l2z-JB1AM-Fq5q6x-18">
           <mxCell style="vsdxID=129;edgeStyle=none;startArrow=none;endArrow=none;startSize=5;endSize=5;strokeWidth=4;strokeColor=#000000;spacingTop=-1;spacingBottom=-1;spacingLeft=-1;spacingRight=-1;verticalAlign=middle;html=1;labelBackgroundColor=#ffffff;rounded=0;fontFamily=Helvetica;" parent="qWZ-l2z-JB1AM-Fq5q6x-1" edge="1">
             <mxGeometry relative="1" as="geometry">
