@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "Exceptions.h"
 
 Game::Game(): // Конструктор по умолчанию класса Game инициализирует следующие члены
         buttonRowsCount("./images/rows.png",160, 485), // Инициализация кнопки, отображающей количество строк
@@ -294,7 +294,7 @@ void Game::checkAndClearFilledLines()
         }
 
         // Если встретилась незаполненная строка, и до этого были заполненные строки
-        if (!isFull && lines_in_a_row > 0)
+        else if (lines_in_a_row > 0)
         {
             // Увеличиваем общий счетчик удаленных строк на количество заполненных строк подряд
             countLines += lines_in_a_row;
@@ -407,8 +407,8 @@ void Game::readFileBestPlayers(const char* fileName)
         // Создаем временный объект с информацией об игроке
         PlayerInfo tempPlayerInfo(tempName, tempScore);
 
-        // Помещаем информацию об игроке в очередь
-        infoQueue.enqueue(tempPlayerInfo);
+        // Помещаем информацию об игроке в список
+        infoList.push_back(tempPlayerInfo);
     }
 
     // Если конец файла не достигнут, бросаем исключение
@@ -431,30 +431,30 @@ void Game::writeFileBestPlayers(const char* fileName)
     // Если файл не удалось открыть, бросаем исключение
     if (!input.is_open()) {throw ExceptionFile("Ошибка открытия файла для записи");}
 
-    // Пока очередь не пуста
-    while (!infoQueue.isEmpty()){
-        // Извлекаем информацию об игроке из очереди
-        PlayerInfo tempPlayerInfo = infoQueue.front();
+    // Пока список не пуст
+    while (!infoList.empty()){
+        // Извлекаем информацию об игроке из списка
+        PlayerInfo tempPlayerInfo = infoList.front();
 
         // Записываем имя игрока и очки в файл
         input << tempPlayerInfo.getNickName() << " " << tempPlayerInfo.getScore() << "\n";
 
-        // Удаляем иформацию об игроке из очереди
-        infoQueue.dequeue();
+        // Удаляем информацию об игроке из списка
+        infoList.pop_front();
     }
 }
 
-// Функция для отображения блока с лучшими игроками
+// Функция для отображения блока с лучшими игроках
 void Game::showBestPlayersBlock(sf::RenderWindow& window)
 {
     int offset_x = 90, offset_y = 0;  // Задаем начальные отступы
-    Queue<PlayerInfo> tempQueue = infoQueue;  // Создаем временную очередь, копируя имеющуюся
+    List<PlayerInfo> tempList = infoList;  // Создаем временный список, копируя имеющийся
 
-    // Отображаем информацию о первых пяти игроках из очереди
-    for (int i = 0; i < 5; ++i)
+    // Отображаем информацию о первых пяти игроках из списка
+    for (int i = 0; i < 5 && !tempList.empty(); ++i)
     {
-        // Извлекаем информацию об игроке из очереди
-        PlayerInfo tempPlayerInfo = tempQueue.front();
+        // Извлекаем информацию об игроке из списка
+        PlayerInfo tempPlayerInfo = tempList.front();
 
         // Задаем текстовую строку и позицию для имени игрока
         text.setString(tempPlayerInfo.getNickName());
@@ -471,17 +471,14 @@ void Game::showBestPlayersBlock(sf::RenderWindow& window)
         // Отрисовываем текст
         window.draw(text);
 
-        // Удаляем информацию об игроке из очереди
-        tempQueue.dequeue();
+        // Удаляем информацию об игроке из списка
+        tempList.pop_front();
 
         // Увеличиваем вертикальный отступ для следующего игрока
         offset_y += 30;
     }
 
-    // Очищаем оставшуюся очередь
-    while (!tempQueue.isEmpty()) {
-        tempQueue.dequeue();
-    }
+    // После завершения цикла, временный список автоматически очистится
 }
 
 // Функция для увеличения очков игрока в зависимости от количества очищенных строк подряд
@@ -594,53 +591,45 @@ void Game::showGameTime(sf::RenderWindow &window)
 
 }
 
-// Метод для проверки статистики перед сохранением
 void Game::checkStatisticBeforeSave()
 {
-    // Создаем временную очередь для игрока
-    Queue<PlayerInfo> tempQueue;
-    // Инициализируем флаг добавления счета как ложный
-    bool isScoreAdded = false;
+    // Создаем временный список для игроков
+    List<PlayerInfo> tempList;
 
-    //Пока очередь информации о игроке не пуста
-    while(!infoQueue.isEmpty())
+    // Создаем новую информацию о счете
+    PlayerInfo newScore{nickName, score};
+
+    // Пока список не пуст
+    while (!infoList.empty())
     {
-        // Переменная текущего элемента из очереди игроков
-        PlayerInfo current = infoQueue.front();
-        // Удаляем текущий элемент из очереди информации
-        infoQueue.dequeue();
+        // Переменная текущего элемента из списка игроков
+        PlayerInfo current = infoList.front();
+        // Удаляем текущий элемент из списка
+        infoList.pop_front();
 
-        // Если счет ещё не добавлен и текущий счет больше счета текущего элемента
-        if (!isScoreAdded && score > current.getScore())
+        // Если счет текущего пользователя меньше, чем у нового пользователя, добавляем нового пользователя в список
+        if (current.getScore() < newScore.getScore())
         {
-            // Создаем новую информацию о счете игрока
-            PlayerInfo newScore{nickName, score};
-            // Добавляем новый счет в временную очередь
-            tempQueue.enqueue(newScore);
-            // Помечаем, что счет добавлен
-            isScoreAdded = true;
+            tempList.push_back(newScore);
+            newScore = current;   // Теперь нашей задачей будет вставка текущего пользователя в правильное место списка
         }
-
-        // Добавляем текущий элемент во временную очередь
-        tempQueue.enqueue(current);
+        else
+        {
+            // иначе просто добавляем текущего пользователя в список
+            tempList.push_back(current);
+        }
     }
 
-    // Если новый счет еще не добавлен
-    if (!isScoreAdded)
-    {
-        // Создаем новую информацию о счете
-        PlayerInfo newScore{nickName, score};
-        // Добавляем новый счет во временную очередь
-        tempQueue.enqueue(newScore);
-    }
+    // Добавляем последнего пользователя в список.
+    tempList.push_back(newScore);
 
-    // Перемещаем все элементы обратно в очередь информации о игроке
-    while(!tempQueue.isEmpty())
+    // Позволяем всем элементам изменить позицию в списке
+    while (!tempList.empty())
     {
-        // Добавляем в начало очереди информации первый элемент временной очереди
-        infoQueue.enqueue(tempQueue.front());
-        // Удаляем первый элемент временной очереди
-        tempQueue.dequeue();
+        // Добавляем в начало списка информации первый элемент временного списка
+        infoList.push_front(tempList.back());
+        // Удаляем последний элемент временной информации
+        tempList.pop_back();
     }
 }
 

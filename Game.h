@@ -1,13 +1,13 @@
 #ifndef TETRIS_GAME_H
 #define TETRIS_GAME_H
 
-
+#include "Exceptions.h"
 #include "header.h"
 #include "Board.h"
 #include "Figure.h"
 #include "Button.h"
 #include "Picture.h"
-#include "Queue.h"
+#include "List.h"
 #include "GameMenu.h"
 
 class Game  // Определение класса Game
@@ -42,7 +42,7 @@ protected:
     std::string number;  // Номер
     std::string nickName;  // Имя игрока
 
-    Queue<PlayerInfo> infoQueue;  // Очередь с информацией об игроках
+    List<PlayerInfo> infoList;  // Очередь с информацией об игроках
 public:
 
 public:

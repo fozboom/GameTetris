@@ -1,6 +1,6 @@
 #ifndef TETRIS_LIST_H
 #define TETRIS_LIST_H
-#pragma once
+
 #include <initializer_list>
 #include <iostream>
 #include <iterator>
@@ -40,18 +40,16 @@ private:
 
     node_allocator allocator_;
 
+
+
+
     template <typename... Args>
-    FakeListNode* create_node(const T& value)
+    void insert(FakeListNode* left, FakeListNode* last, Args&&... args)
     {
-        FakeListNode* ptr = node_allocator_traits::allocate(allocator_, 1);
-        try {
-            node_allocator_traits::construct(allocator_, value);
-        } catch (...) {
-            node_allocator_traits::deallocate(allocator_, value);
-            throw;
-        }
-        return ptr;
+        ++size_;
+        insert_nodes(create_node(std::forward<Args>(args)...), left, last);
     }
+
 
     static void insert_nodes(FakeListNode* node, FakeListNode* left, FakeListNode* last)
     {
@@ -68,6 +66,7 @@ private:
                                               1);
         }
     }
+
 
     void erase_node(FakeListNode* node)
     {
@@ -93,12 +92,29 @@ public:
             for (; ind < count; ++ind) {
                 push_back(element);
             }
-        } catch (...) {
-            for (size_t j = 0; j < ind; ++j) {
+        } catch (...)
+        {
+            for (size_t j = 0; j < ind; ++j)
+            {
                 pop_front();
             }
             throw;
         }
+    }
+
+    template <typename... Args>
+    FakeListNode* create_node(Args&&... args)
+    {
+        FakeListNode* ptr = node_allocator_traits::allocate(allocator_, 1);
+        try {
+            node_allocator_traits::construct(allocator_, static_cast<ListNode*>(ptr), std::forward<Args>(args)...);
+        }
+        catch (...)
+        {
+            node_allocator_traits::deallocate(allocator_, static_cast<ListNode*>(ptr), 1);
+            throw;
+        }
+        return ptr;
     }
 
 
@@ -176,10 +192,11 @@ public:
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
 
-    List(const List& other) : List(allocator_traits::select_on_container_copy_construction(other.allocator_)) {
+    List(const List& other) : List(allocator_traits::select_on_container_copy_construction(other.allocator_))
+    {
         try {
-            for (auto it = other.cbegin(), end = other.cend(); it != end; ++it) {
-                push_back(*it);
+            for (auto it = other.begin(), end = other.end(); it != end; ++it) {
+                push_back(T(*it));
             }
         } catch (...) {
             while (!empty()) {
@@ -189,22 +206,42 @@ public:
         }
     }
 
+
+
+    List& operator=(List&& other)
+    {
+        List copy(std::move(other));
+        if (node_allocator_traits::propagate_on_container_move_assignment::value) {
+            allocator_ = other.allocator_;
+        }
+        swap(*this, copy);
+
+        return *this;
+    }
+
+
     static void swap(List& left, List& rigth)
     {
-        if (node_allocator_traits::propagate_on_container_swap::value) {
+        if (node_allocator_traits::propagate_on_container_swap::value)
+        {
             std::swap(left.allocator_, rigth.allocator_);
         }
-
         FakeListNode* tmpl = rigth.fake_.prev;
         FakeListNode* tmpr = rigth.fake_.next;
-        if (left.size_ != 0) {
+        if (left.size_ != 0)
+        {
             insert_nodes(&rigth.fake_, left.fake_.prev, left.fake_.next);
-        } else {
+        }
+        else
+        {
             connect_nodes(&rigth.fake_, &rigth.fake_);
         }
-        if (rigth.size_ != 0) {
+        if (rigth.size_ != 0)
+        {
             insert_nodes(&left.fake_, tmpl, tmpr);
-        } else {
+        }
+        else
+        {
             connect_nodes(&left.fake_, &left.fake_);
         }
         std::swap(left.size_, rigth.size_);
@@ -220,19 +257,13 @@ public:
         swap(other, *this);
     }
 
-    List& operator=(List&& other){
-        List copy(std::move(other));
-        if (node_allocator_traits::propagate_on_container_move_assignment::value) {
-            allocator_ = other.allocator_;
-        }
-        swap(*this, copy);
 
-        return *this;
-    }
 
-    List& operator=(const List& other) {
+    List& operator=(const List& other)
+    {
         List copy(other);
-        if (node_allocator_traits::propagate_on_container_copy_assignment::value) {
+        if (node_allocator_traits::propagate_on_container_copy_assignment::value)
+        {
             allocator_ = other.allocator_;
         }
         swap(*this, copy);
@@ -265,6 +296,8 @@ public:
     void pop_back() { erase_node(fake_.prev); }
 
     void pop_front() { erase_node(fake_.next); }
+
+
 
     bool empty() const { return size_ == 0; }
 

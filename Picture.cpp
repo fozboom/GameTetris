@@ -16,6 +16,8 @@ void Picture::setPosition (float x, float y)
     sprite.setPosition(x, y);
 }
 
+
+
 // Метод отрисовки спрайта в окне
 void Picture::draw(sf::RenderWindow& window)
 {

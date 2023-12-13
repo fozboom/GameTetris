@@ -26,8 +26,8 @@ add_executable(Tetris main.cpp
         Picture.cpp
         Picture.h
         PlayerInfo.cpp
-        Queue.h
         List.h
+        Algorithm.h
 )
 
 target_link_libraries(Tetris sfml-graphics sfml-audio)
