@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "Exceptions.h"
+#include "Algorithm.h"
 
 Game::Game(): // Конструктор по умолчанию класса Game инициализирует следующие члены
         buttonRowsCount("./images/rows.png",160, 485), // Инициализация кнопки, отображающей количество строк
@@ -591,46 +592,17 @@ void Game::showGameTime(sf::RenderWindow &window)
 
 }
 
-void Game::checkStatisticBeforeSave()
-{
-    // Создаем временный список для игроков
-    List<PlayerInfo> tempList;
-
+void Game::checkStatisticBeforeSave() {
     // Создаем новую информацию о счете
     PlayerInfo newScore{nickName, score};
 
-    // Пока список не пуст
-    while (!infoList.empty())
-    {
-        // Переменная текущего элемента из списка игроков
-        PlayerInfo current = infoList.front();
-        // Удаляем текущий элемент из списка
-        infoList.pop_front();
+    // Добавляем нового игрока в список
+    infoList.push_back(newScore);
 
-        // Если счет текущего пользователя меньше, чем у нового пользователя, добавляем нового пользователя в список
-        if (current.getScore() < newScore.getScore())
-        {
-            tempList.push_back(newScore);
-            newScore = current;   // Теперь нашей задачей будет вставка текущего пользователя в правильное место списка
-        }
-        else
-        {
-            // иначе просто добавляем текущего пользователя в список
-            tempList.push_back(current);
-        }
-    }
-
-    // Добавляем последнего пользователя в список.
-    tempList.push_back(newScore);
-
-    // Позволяем всем элементам изменить позицию в списке
-    while (!tempList.empty())
-    {
-        // Добавляем в начало списка информации первый элемент временного списка
-        infoList.push_front(tempList.back());
-        // Удаляем последний элемент временной информации
-        tempList.pop_back();
-    }
+    // Сортируем список в порядке убывания счета
+    Algorithm<PlayerInfo>::sort(infoList, [](const PlayerInfo& a, const PlayerInfo& b) {
+        return a.getScore() > b.getScore();
+    });
 }
 
 
@@ -805,6 +777,7 @@ int Game::mousePressedCheck(sf::Event& event, sf::RenderWindow& window)
                 buttonPause.updateSprite("images/pause.png");
                 break;
             }
+
         }
     }
 

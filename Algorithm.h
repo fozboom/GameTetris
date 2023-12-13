@@ -11,11 +11,11 @@ class Algorithm
 public:
 
     //сортировка
-    static void sort(List<T>& list)
+    static void sort(List<T>& list, std::function<bool(const T&, const T&)> comp)
     {
         std::vector<T> tmp(list.size());
         std::copy(list.begin(), list.end(), tmp.begin());
-        std::sort(tmp.begin(), tmp.end());
+        std::sort(tmp.begin(), tmp.end(), comp);
         std::copy(tmp.begin(), tmp.end(), list.begin());
     }
 
